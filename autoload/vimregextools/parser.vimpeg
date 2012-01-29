@@ -2,8 +2,9 @@
 
 .skip_white = false
 .namespace = 'vimregextools#parser'
-.parser_name = 'vimregextools#parser'
+.parser_name = 'vimregextools#parser#now'
 .root_element = 'regexp'
+.debug = true
 
 regexp            ::= legal_flag ? pattern
 pattern           ::= branch ( or branch ) *
@@ -63,7 +64,7 @@ line           ::= escape '%\d\+l'
 column         ::= escape '%\d\+c'
 virtual_column ::= escape '%\d\+v'
 char_class     ::= indentifier | identifier_no_digits | keyword | non_keyword | file_name | file_name_no_digits |  printable | printable_no_digits | whitespace | non_whitespace | digit | non_digit | hex_digit | non_hex_digit | octal_digit | non_octal_digit | word | non_word | head | non_head | alpha | non_alpha | lowercase | non_lowercase | uppercase | non_uppercase | nl_or_indentifier | nl_or_identifier_no_digits | nl_or_keyword | nl_or_non_keyword | nl_or_file_name | nl_or_file_name_no_digits |  nl_or_printable | nl_or_printable_no_digits | nl_or_whitespace | nl_or_non_whitespace | nl_or_digit | nl_or_non_digit | nl_or_hex_digit | nl_or_non_hex_digit | nl_or_octal_digit | nl_or_non_octal_digit | nl_or_word | nl_or_non_word | nl_or_head | nl_or_non_head | nl_or_alpha | nl_or_non_alpha | nl_or_lowercase | nl_or_non_lowercase | nl_or_uppercase | nl_or_non_uppercase
-; Collection {{{1
+; Collection
 collection                 ::= ( '\\_' ) ? '[' caret ? ( range | decimal_char | octal_char | hex_char_low | hex_char_medium | hex_char_high | bracket_class | equivalence | collation | coll_esc_char | char ) * ']'
 caret                      ::= '\^'
 range                      ::= char '-' char
@@ -72,7 +73,7 @@ octal_char                 ::= '\\o[0-7]\{,4}'
 hex_char_low               ::= '\\x[0-9a-f]\{,2}'
 hex_char_medium            ::= '\\u[0-9a-f]\{,4}'
 hex_char_high              ::= '\\U[0-9a-f]\{,8}'
-; Bracket character classes {{{2
+; Bracket character classes
 bracket_class ::= '[:' ( bc_alpha | bc_alnum | bc_blank | bc_cntrl | bc_digit | bc_graph | bc_lower | bc_print | bc_punct | bc_space | bc_upper | bc_xdigit | bc_return | bc_tab | bc_escape | bc_backspace ) ':]'
 bc_alpha      ::= 'alpha'
 bc_alnum      ::= 'alnum'
@@ -94,10 +95,9 @@ coll_esc_char ::= '\\[^\]^\bdertnoUux-]'
 sequence      ::= escape '%[' ( collection | char ) * ']'
 equivalence   ::= '\[=' char '=\]'
 collation     ::= '\[\.' char '\.\]'
-;}}}1
 back_reference             ::= '\\[1-9]'
 last_substitution          ::= '\\~'
-; Character classes {{{1
+; Character classes
 identifier                 ::= '\\i'
 nl_or_identifier           ::= '\\_i'
 identifier_no_digits       ::= '\\I'
