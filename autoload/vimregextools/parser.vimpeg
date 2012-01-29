@@ -9,6 +9,8 @@
 regexp            ::= legal_flag ? pattern
 pattern           ::= branch ( or branch ) *
 branch            ::= concat ( and concat ) *
+or                ::= '\\|'
+and               ::= '\\&'
 concat            ::= piece +
 piece             ::= atom multi ? flag *
 atom              ::= flag * ( ordinary_atom | capture_group | non_capture_group )
@@ -63,7 +65,7 @@ mark           ::= escape '%''[[:alnum:]<>[\]''"^.(){}]'
 line           ::= escape '%\d\+l'
 column         ::= escape '%\d\+c'
 virtual_column ::= escape '%\d\+v'
-char_class     ::= indentifier | identifier_no_digits | keyword | non_keyword | file_name | file_name_no_digits |  printable | printable_no_digits | whitespace | non_whitespace | digit | non_digit | hex_digit | non_hex_digit | octal_digit | non_octal_digit | word | non_word | head | non_head | alpha | non_alpha | lowercase | non_lowercase | uppercase | non_uppercase | nl_or_indentifier | nl_or_identifier_no_digits | nl_or_keyword | nl_or_non_keyword | nl_or_file_name | nl_or_file_name_no_digits |  nl_or_printable | nl_or_printable_no_digits | nl_or_whitespace | nl_or_non_whitespace | nl_or_digit | nl_or_non_digit | nl_or_hex_digit | nl_or_non_hex_digit | nl_or_octal_digit | nl_or_non_octal_digit | nl_or_word | nl_or_non_word | nl_or_head | nl_or_non_head | nl_or_alpha | nl_or_non_alpha | nl_or_lowercase | nl_or_non_lowercase | nl_or_uppercase | nl_or_non_uppercase
+char_class     ::= identifier | identifier_no_digits | keyword | non_keyword | file_name | file_name_no_digits |  printable | printable_no_digits | whitespace | non_whitespace | digit | non_digit | hex_digit | non_hex_digit | octal_digit | non_octal_digit | word | non_word | head | non_head | alpha | non_alpha | lowercase | non_lowercase | uppercase | non_uppercase | nl_or_identifier | nl_or_identifier_no_digits | nl_or_keyword | nl_or_non_keyword | nl_or_file_name | nl_or_file_name_no_digits |  nl_or_printable | nl_or_printable_no_digits | nl_or_whitespace | nl_or_non_whitespace | nl_or_digit | nl_or_non_digit | nl_or_hex_digit | nl_or_non_hex_digit | nl_or_octal_digit | nl_or_non_octal_digit | nl_or_word | nl_or_non_word | nl_or_head | nl_or_non_head | nl_or_alpha | nl_or_non_alpha | nl_or_lowercase | nl_or_non_lowercase | nl_or_uppercase | nl_or_non_uppercase
 ; Collection
 collection                 ::= ( '\\_' ) ? '[' caret ? ( range | decimal_char | octal_char | hex_char_low | hex_char_medium | hex_char_high | bracket_class | equivalence | collation | coll_esc_char | char ) * ']'
 caret                      ::= '\^'
@@ -96,7 +98,7 @@ sequence      ::= escape '%[' ( collection | char ) * ']'
 equivalence   ::= '\[=' char '=\]'
 collation     ::= '\[\.' char '\.\]'
 back_reference             ::= '\\[1-9]'
-last_substitution          ::= '\\~'
+last_substitution          ::= '\~'
 ; Character classes
 identifier                 ::= '\\i'
 nl_or_identifier           ::= '\\_i'
