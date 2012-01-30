@@ -1,10 +1,11 @@
 ; Vim regular expression parser
 
-.skip_white = false
-.namespace = 'vimregextools#parser'
-.parser_name = 'vimregextools#parser#now'
+.skip_white   = false
+.namespace    = 'vimregextools#parser'
+.parser_name  = 'vimregextools#parser#now'
 .root_element = 'regexp'
-.debug = true
+.ignore_case  = false
+.debug        = true
 
 regexp                 ::= legal_flag ? pattern eor
 pattern                ::= branch ( or branch ) *
@@ -27,16 +28,16 @@ very_magic             ::= '\\v'
 very_no_magic          ::= '\\V'
 capture_group          ::= open_capture_group pattern close_group
 non_capture_group      ::= open_non_capture_group pattern close_group
-open_capture_group     ::= escape '('
-open_non_capture_group ::= escape '%('
-close_group            ::= escape ')'
+open_capture_group     ::= '\\('
+open_non_capture_group ::= '\\%('
+close_group            ::= '\\)'
 multi                  ::= star | plus | equal | question | curly | at
 star                   ::= '*'
-plus                   ::= escape '+'
-equal                  ::= escape '='
-question               ::= escape '?'
+plus                   ::= '\\+'
+equal                  ::= '\\='
+question               ::= '\\?'
 curly                  ::= start_curly ( greedy | non_greedy ) ? end_curly
-start_curly            ::= escape '{'
+start_curly            ::= '\\{'
 end_curly              ::= escape ? '}'
 non_greedy             ::= '-' greedy ?
 greedy                 ::= lower ( ',' upper ) ? | ',' upper
@@ -44,11 +45,11 @@ lower                  ::= number
 upper                  ::= number
 number                 ::= '\d\+'
 at                     ::= at_ahead | at_no_ahead | at_behind | at_no_behind | at_whole
-at_ahead               ::= escape '@='
-at_no_ahead            ::= escape '@!'
-at_behind              ::= escape '@<='
-at_no_behind           ::= escape '@<!'
-at_whole               ::= escape '@>'
+at_ahead               ::= '\\@='
+at_no_ahead            ::= '\\@!'
+at_behind              ::= '\\@<='
+at_no_behind           ::= '\\@<!'
+at_whole               ::= '\\@>'
 ordinary_atom          ::= dot | nl_or_dot | anchor | char_class | collection | sequence | back_reference | last_substitution | char
 dot                    ::= '\.'
 nl_or_dot              ::= '\\_\.'
@@ -58,23 +59,23 @@ bol            ::= '\^'
 bol_any        ::= '\\_\^'
 eol            ::= '\$'
 eol_any        ::= '\\_\$'
-bow            ::= escape '<'
-eow            ::= escape '>'
+bow            ::= '\\<'
+eow            ::= '\\>'
 zs             ::= '\\zs'
 ze             ::= '\\ze'
-bof            ::= escape '%\$'
-eof            ::= escape '%\^'
-visual         ::= escape '%V'
-cursor         ::= escape '%#'
-mark           ::= escape '%''[[:alnum:]<>[\]''"^.(){}]'
-line           ::= escape '%\d\+l'
-column         ::= escape '%\d\+c'
-virtual_column ::= escape '%\d\+v'
+bof            ::= '\\%\$'
+eof            ::= '\\%\^'
+visual         ::= '\\%V'
+cursor         ::= '\\%#'
+mark           ::= '\\%''[[:alnum:]<>[\]''"^.(){}]'
+line           ::= '\\%\d\+l'
+column         ::= '\\%\d\+c'
+virtual_column ::= '\\%\d\+v'
 char_class     ::= identifier | identifier_no_digits | keyword | non_keyword | file_name | file_name_no_digits |  printable | printable_no_digits | whitespace | non_whitespace | digit | non_digit | hex_digit | non_hex_digit | octal_digit | non_octal_digit | word | non_word | head | non_head | alpha | non_alpha | lowercase | non_lowercase | uppercase | non_uppercase | nl_or_identifier | nl_or_identifier_no_digits | nl_or_keyword | nl_or_non_keyword | nl_or_file_name | nl_or_file_name_no_digits |  nl_or_printable | nl_or_printable_no_digits | nl_or_whitespace | nl_or_non_whitespace | nl_or_digit | nl_or_non_digit | nl_or_hex_digit | nl_or_non_hex_digit | nl_or_octal_digit | nl_or_non_octal_digit | nl_or_word | nl_or_non_word | nl_or_head | nl_or_non_head | nl_or_alpha | nl_or_non_alpha | nl_or_lowercase | nl_or_non_lowercase | nl_or_uppercase | nl_or_non_uppercase
 ; Collection
-collection       ::= start_collection caret ? ( range | decimal_char | octal_char | hex_char_low | hex_char_medium | hex_char_high | bracket_class | equivalence | collation | coll_esc_char | char ) * end_collection
-start_collection  ::= nl_or ? '\['
-end_collection ::=  '\]'
+collection       ::= start_collection caret ? ']' ? ( range | decimal_char | octal_char | hex_char_low | hex_char_medium | hex_char_high | bracket_class | equivalence | collation | coll_esc_char | !']' char ) * end_collection
+start_collection ::= nl_or ? '\['
+end_collection   ::= '\]'
 nl_or            ::= '\\_'
 caret            ::= '\^'
 range            ::= char '-' char
@@ -84,29 +85,29 @@ hex_char_low     ::= '\\x[0-9a-f]\{,2}'
 hex_char_medium  ::= '\\u[0-9a-f]\{,4}'
 hex_char_high    ::= '\\U[0-9a-f]\{,8}'
 ; Bracket character classes
-bracket_class     ::= '[:' ( bc_alpha | bc_alnum | bc_blank | bc_cntrl | bc_digit | bc_graph | bc_lower | bc_print | bc_punct | bc_space | bc_upper | bc_xdigit | bc_return | bc_tab | bc_escape | bc_backspace ) ':]'
-bc_alpha          ::= 'alpha'
-bc_alnum          ::= 'alnum'
-bc_blank          ::= 'blank'
-bc_cntrl          ::= 'cntrl'
-bc_digit          ::= 'digit'
-bc_graph          ::= 'graph'
-bc_lower          ::= 'lower'
-bc_print          ::= 'print'
-bc_punct          ::= 'punct'
-bc_space          ::= 'space'
-bc_upper          ::= 'upper'
-bc_xdigit         ::= 'xdigit'
-bc_return         ::= 'return'
-bc_tab            ::= 'tab'
-bc_escape         ::= 'escape'
-bc_backspace      ::= 'backspace'
-coll_esc_char     ::= '\\[^\]^\bdertnoUux-]'
+bracket_class ::= '[:' ( bc_alpha | bc_alnum | bc_blank | bc_cntrl | bc_digit | bc_graph | bc_lower | bc_print | bc_punct | bc_space | bc_upper | bc_xdigit | bc_return | bc_tab | bc_escape | bc_backspace ) ':]'
+bc_alpha      ::= 'alpha'
+bc_alnum      ::= 'alnum'
+bc_blank      ::= 'blank'
+bc_cntrl      ::= 'cntrl'
+bc_digit      ::= 'digit'
+bc_graph      ::= 'graph'
+bc_lower      ::= 'lower'
+bc_print      ::= 'print'
+bc_punct      ::= 'punct'
+bc_space      ::= 'space'
+bc_upper      ::= 'upper'
+bc_xdigit     ::= 'xdigit'
+bc_return     ::= 'return'
+bc_tab        ::= 'tab'
+bc_escape     ::= 'escape'
+bc_backspace  ::= 'backspace'
+coll_esc_char ::= '\\[^\]^\bdertnoUux-]'
 ; Sequence
-sequence          ::= start_sequence ( collection | seq_char ) * end_sequence
-seq_char          ::= seq_escaped_char | '.'
+sequence          ::= start_sequence ']' ? ( collection | seq_char ) * end_sequence
+seq_char          ::= seq_escaped_char | !']' '.'
 seq_escaped_char  ::= esc | tab | cr | bs | lb | '\\.'
-start_sequence    ::= escape '%['
+start_sequence    ::= '\\%['
 end_sequence      ::= '\]'
 equivalence       ::= '\[=' char '=\]'
 collation         ::= '\[\.' char '\.\]'
