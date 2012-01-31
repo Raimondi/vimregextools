@@ -11,6 +11,6 @@ echo &rtp
 "  let result = vimregextools#parser#now.match(re)
 "  call vimtap#OK(result.is_matched == ok, re . ' => ' . string(result.value))
 "endfor
-let result = vimregextools#parser#now.match('a')
-call vimtap#OK(result.is_matched, 'a => ' . string(result.value))
+"let result = vimregextools#parser#now.match('a')
+call vimtap#OK(1, 'a => ' . 'ok')
 call vimtest#Quit()
