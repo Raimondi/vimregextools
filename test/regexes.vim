@@ -1,16 +1,17 @@
-" RegEx tests.
-call vimtest#StartTAP()
-echo &rtp
-"let tests = readfile(expand('<sfile>:p:h') . '/regexes.txt')
-"call filter(tests, 'v:val !~ "^#"')
-"call map(tests, "split(v:val, '\\s\\ze\\d$')")
+" Test RegEx strings.
+call vimtest#StartTap()
+let tests = readfile(expand('<sfile>:p:h') . '/regexes.txt')
+call filter(tests, 'v:val !~ "^#\\|^\\s*$"')
+call map(tests, "split(v:val, '\\s\\ze\\d$')")
 "call vimtap#Diag(string(tests))
 " Plan to run a lot of tests.
-"call vimtap#Plan(len(tests))
-"for [re, ok] in tests
-"  let result = vimregextools#parser#now.match(re)
-"  call vimtap#OK(result.is_matched == ok, re . ' => ' . string(result.value))
-"endfor
-"let result = vimregextools#parser#now.match('a')
-call vimtap#OK(1, 'a => ' . 'ok')
+call vimtap#Plan(len(tests))
+for [re, match] in tests
+  echo re
+  silent let result = vimregextools#parser#now.match(re)
+  let passed = match == result.is_matched
+  let msg = '/'.escape(re, '/').'/ is '.(match ? '' : 'not ').'valid'
+  call vimtap#Ok(passed,
+        \ msg . ' => ' . string(result.value))
+endfor
 call vimtest#Quit()

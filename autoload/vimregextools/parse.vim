@@ -677,12 +677,12 @@ function! vimregextools#parse#bc_backspace(elems) abort " {{{1
   return result
 endfunction "vimregextools#parser#bc_backspace
 
-function! vimregextools#parse#coll_esc_char(elems) abort " {{{1
-  " coll_esc_char ::= '\\[^\]^\bdertnoUux-]' -> #coll_esc_char
+function! vimregextools#parse#coll_char(elems) abort " {{{1
+  " coll_char ::= '\\[^\]^\bdertnoUux-]' -> #coll_char
   let result = NoEmpty(a:elems)
-  echom 'coll_esc_char: ' . string(result)
+  echom 'coll_char: ' . string(result)
   return result
-endfunction "vimregextools#parser#coll_esc_char
+endfunction "vimregextools#parser#coll_char
 
 function! vimregextools#parse#sequence(elems) abort " {{{1
   " sequence ::= start_sequence ']' ? ( collection | seq_char ) * end_sequence -> #sequence
