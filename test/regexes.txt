@@ -47,6 +47,12 @@ ba '''ba => literal characters.''' 1
 ç '''ç => literal character.''' 1
 Ç '''Ç => literal character.''' 1
 abçdef '''abçdef => literal characters.''' 1
+^ ''' => start of line.''' 1
+a^ '''a^ => literal characters.''' 1
+a^b '''a^b => literal characters.''' 1
+a^ '''a^ => literal characters.''' 1
+a\(^b\) '[''a => literal character.'', ''\( => start capture group.'', '' ^b => literal characters.'', ''\) => end capture group.'']' 1
+a\|^b '[''a => literal character.'', ''\| => previous atom and next atom are alternate choices (''''or'''').'', '' ^ => start of line.'', ''  b => literal character.'']' 1
 / '''/ => literal character.''' 1
 \~ '''~ => literal character.''' 1
 ] '[]' 1
