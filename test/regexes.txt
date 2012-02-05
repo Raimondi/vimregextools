@@ -42,6 +42,11 @@ j\q '''jq => literal characters.''' 1
 # Characters
 a '''a => literal character.''' 1
 ba '''ba => literal characters.''' 1
+ñ '''ñ => literal character.''' 1
+\cñ '[''\c => ignore case.'', ''ñ => literal character.'']' 1
+ç '''ç => literal character.''' 1
+Ç '''Ç => literal character.''' 1
+abçdef '''abçdef => literal characters.''' 1
 / '''/ => literal character.''' 1
 \~ '''~ => literal character.''' 1
 ] '[]' 1
@@ -335,17 +340,17 @@ x\? '[''x => literal character.'', ''\? => zero or one of the previous atom.'']'
 \%(\%(b\)\ '[]' 0
 \%(\%(b\)\) '[''\%( => start non-capture group.'', ''  \%( => start non-capture group.'', ''  b => literal character.'', ''\) => end non-capture group.'', ''\) => end non-capture group.'']' 1
 # ignore_comb_chars
-\Z '[''\'', ''\Z => ignore differences in Unicode "combining characters".'']' 1
+\Z '''\Z => ignore differences in Unicode "combining characters".''' 1
 x\Z '[''x => literal character.'', ''\Z => ignore differences in Unicode "combining characters".'']' 1
-\Zx '[[''\'', ''\Z => ignore differences in Unicode "combining characters".''], ''x => literal character.'']' 1
+\Zx '[''\Z => ignore differences in Unicode "combining characters".'', ''x => literal character.'']' 1
 # ignore_case
-\c '[''\'', ''\c => ignore case.'']' 1
+\c '''\c => ignore case.''' 1
 x\c '[''x => literal character.'', ''\c => ignore case.'']' 1
-\cx '[[''\'', ''\c => ignore case.''], ''x => literal character.'']' 1
+\cx '[''\c => ignore case.'', ''x => literal character.'']' 1
 # match_case
-\C '[''\'', ''\C => match case.'']' 1
+\C '''\C => match case.''' 1
 x\C '[''x => literal character.'', ''\C => match case.'']' 1
-\Cx '[[''\'', ''\C => match case.''], ''x => literal character.'']' 1
+\Cx '[''\C => match case.'', ''x => literal character.'']' 1
 # magic
 \m '[]' 0
 x\m '[''x => literal character.'', ''\m => magic.'']' 1
@@ -388,7 +393,7 @@ expression '''expression => literal characters.''' 1
 SIT '''SIT => literal characters.''' 1
 at '''at => literal characters.''' 1
 /cat/im '''/cat/im => literal characters.''' 1
-\Cxcat '[[''\'', ''\C => match case.''], ''xcat => literal characters.'']' 1
+\Cxcat '[''\C => match case.'', ''xcat => literal characters.'']' 1
 \(3.\)\(.*\)\(3.\) '[''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  . => any single character.'', ''  * => zero or more of the previous atom.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'']' 1
 \(3.\)\(ab\|.*\)\(3.\) '[''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  ab => literal characters.'', ''\| => previous atom and next atom are alternate choices (''''or'''').'', ''  . => any single character.'', ''  * => zero or more of the previous atom.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'']' 1
 abc '''abc => literal characters.''' 1
@@ -403,7 +408,7 @@ ca '''ca => literal characters.''' 1
 \(.\+\).\+\(.\+\) '[''\( => start capture group.'', ''  . => any single character.'', ''  \+ => one or more of the previous atom.'', ''\) => end capture group.'', ''. => any single character.'', ''\+ => one or more of the previous atom.'', ''\( => start capture group.'', ''  . => any single character.'', ''  \+ => one or more of the previous atom.'', ''\) => end capture group.'']' 1
 \(?<a>.\+\).\+\(?<b>.\+\) '[''\( => start capture group.'', ''  ?<a> => literal characters.'', ''  . => any single character.'', ''  \+ => one or more of the previous atom.'', ''\) => end capture group.'', ''. => any single character.'', ''\+ => one or more of the previous atom.'', ''\( => start capture group.'', ''  ?<b> => literal characters.'', ''  . => any single character.'', ''  \+ => one or more of the previous atom.'', ''\) => end capture group.'']' 1
 \([Ð°-Ñ]\)\+ '[''\( => start capture group.'', ''  [ => start collection.'', ''  Ð°-Ñ => literal character(s).'', ''] => end collection.'', ''\) => end capture group.'', ''\+ => one or more of the previous atom.'']' 1
-Ñ€\(ÑƒÐ±Ð¸.*\) '['' => literal characters.'', ''\( => start capture group.'', ''   => literal characters.'', ''  . => any single character.'', ''  * => zero or more of the previous atom.'', ''\) => end capture group.'']' 1
+Ñ€\(ÑƒÐ±Ð¸.*\) '[''Ñ€ => literal characters.'', ''\( => start capture group.'', ''  ÑƒÐ±Ð¸ => literal characters.'', ''  . => any single character.'', ''  * => zero or more of the previous atom.'', ''\) => end capture group.'']' 1
 \([Ð°-Ñ]\)\([Ð°-Ñ]\)\([Ð°-Ñ]\+\) '[''\( => start capture group.'', ''  [ => start collection.'', ''  Ð°-Ñ => literal character(s).'', ''] => end collection.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  [ => start collection.'', ''  Ð°-Ñ => literal character(s).'', ''] => end collection.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  [ => start collection.'', ''  Ð°-Ñ => literal character(s).'', ''] => end collection.'', ''\+ => one or more of the previous atom.'', ''\) => end capture group.'']' 1
 [Ð°-Ñ] '[''[ => start collection.'', ''  Ð°-Ñ => literal character(s).'', ''] => end collection.'']' 1
 12345 '''12345 => literal characters.''' 1

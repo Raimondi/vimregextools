@@ -187,8 +187,8 @@ endfunction "vimregextools#parser#flag
 "legal_flag() {{{1
 function! vimregextools#parse#legal_flag(elems) abort
   " legal_flag ::= case_flag | ignore_comb_chars -> #legal_flag
-  let name = 'legal_flag'
-  let result = NoEmpty(a:elems)
+  call Debug(string(a:elems))
+  let result = a:elems[2] "NoEmpty(a:elems)
   call Debug('legal_flag: ' . string(result))
   return result
 endfunction "vimregextools#parser#legal_flag
@@ -1710,7 +1710,7 @@ function! vimregextools#parse#char(elems) abort
   " char ::= escaped_char | '[^\\[*.]' -> #char
   "let name = 'char'
   call Debug(string(a:elems))
-  let result = len(a:elems) == 1 ? a:elems[0] : a:elems[2]
+  let result = type(a:elems) == type ('') ? a:elems : len(a:elems) == 1 ? a:elems[0] : a:elems[2]
   let result = substitute(result, ' ', '<Space>', 'g')
   "if type(a:elems[0]) == type([])
   "  let name = a:elems[0][1]
