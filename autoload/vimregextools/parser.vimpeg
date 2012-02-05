@@ -15,7 +15,7 @@ branch                 ::= concat ( and concat ) *  -> #branch
 and                    ::= '\\&'                    -> #and
 concat                 ::= piece +                  -> #concat
 piece                  ::= atom multi ? flag *      -> #piece
-atom                   ::= flag * ( non_capture_group | capture_group | ordinary_atom )
+atom                   ::= flag * ( non_capture_group | capture_group | ordinary_atom ) -> #atom
 flag                   ::= escape ! '[^ZcCmMvV]' ( case_flag | magic_flag | ignore_comb_chars ) -> #flag
 legal_flag             ::= escape ! '[^ZcC]' ( case_flag | ignore_comb_chars ) -> #legal_flag
 ignore_comb_chars      ::= 'Z'                         -> #ignore_comb_chars
@@ -27,21 +27,23 @@ magic                  ::= 'm' -> #magic
 no_magic               ::= 'M' -> #no_magic
 very_magic             ::= 'v' -> #very_magic
 very_no_magic          ::= 'V' -> #very_no_magic
-capture_group          ::= open_capture_group pattern ? close_group -> #capture_group
-non_capture_group      ::= open_non_capture_group pattern ? close_group -> #non_capture_group
+capture_group          ::= open_capture_group pattern ? close_capture_group -> #capture_group
+non_capture_group      ::= open_non_capture_group pattern ? close_non_capture_group -> #non_capture_group
 open_capture_group     ::= '\\('  -> #open_capture_group
 open_non_capture_group ::= '\\%(' -> #open_non_capture_group
-close_group            ::= '\\)'  -> #close_group
+close_capture_group            ::= '\\)'  -> #close_capture_group
+close_non_capture_group ::= '\\)'  -> #close_non_capture_group
 multi                  ::= star | escape & '[+=?{@]' ( plus | equal | question | curly | look_around ) -> #multi
 star                   ::= '*'   -> #star
 plus                   ::= '+' -> #plus
 equal                  ::= '=' -> #equal
 question               ::= '?' -> #question
-curly                  ::= start_curly ( greedy | non_greedy ) ? end_curly -> #curly
+;curly                  ::= start_curly ( greedy | non_greedy ) ? end_curly -> #curly
+curly                  ::= start_curly '-' ? lower ? ( ',' upper ? ) ? end_curly -> #curly
 start_curly            ::= '{'                             -> #start_curly
 end_curly              ::= escape ? '}'                      -> #end_curly
 non_greedy             ::= '-' greedy ?                      -> #non_greedy
-greedy                 ::= lower ( ',' upper ) ? | ',' upper -> #greedy
+greedy                 ::= lower ? ( ',' upper ? ) ? | ',' upper -> #greedy
 lower                  ::= number                            -> #lower
 upper                  ::= number                            -> #upper
 number                 ::= '\d\+'                            -> #number
@@ -51,7 +53,7 @@ at_no_ahead            ::= '@!'  -> #at_no_ahead
 at_behind              ::= '@<=' -> #at_behind
 at_no_behind           ::= '@<!' -> #at_no_behind
 at_whole               ::= '@>'  -> #at_whole
-ordinary_atom          ::= dot | nl_or_dot | anchor | char_class | collection | sequence | back_reference | last_substitution | char -> #ordinary_atom
+ordinary_atom          ::= dot | nl_or_dot | anchor | char_class | collection | sequence | back_reference | last_substitution | chars -> #ordinary_atom
 dot                    ::= '\.'    -> #dot
 nl_or_dot              ::= '\\_\.' -> #nl_or_dot
 ; Anchors
@@ -64,8 +66,8 @@ bow            ::= '<'                            -> #bow
 eow            ::= '>'                            -> #eow
 zs             ::= 'zs'                           -> #zs
 ze             ::= 'ze'                           -> #ze
-bof            ::= '%\$'                          -> #bof
-eof            ::= '%\^'                          -> #eof
+bof            ::= '%\^'                          -> #bof
+eof            ::= '%\$'                          -> #eof
 visual         ::= '%V'                           -> #visual
 cursor         ::= '%#'                           -> #cursor
 mark           ::= '%''[[:alnum:]<>[\]''"^.(){}]' -> #mark
@@ -74,10 +76,11 @@ column         ::= '%\d\+c'                       -> #column
 virtual_column ::= '%\d\+v'                       -> #virtual_column
 ; Collection
 collection       ::= start_collection caret ? ( ']' coll_inner * | coll_inner + ) end_collection -> #collection
-coll_inner       ::= range | decimal_char | octal_char | hex_char_low | hex_char_medium | hex_char_high | bracket_class | equivalence | collation | !']' coll_char
-start_collection ::= nl_or ? '\['       -> #start_collection
+coll_inner       ::= range | decimal_char | octal_char | hex_char_low | hex_char_medium | hex_char_high | bracket_class | equivalence | collation | !']' coll_chars
+start_collection ::= coll_nl_or_start | coll_start       -> #start_collection
 end_collection   ::= '\]'               -> #end_collection
-nl_or            ::= '\\_'              -> #nl_or
+coll_start       ::= '\['              -> #coll_start
+coll_nl_or_start ::= '\\_['              -> #coll_nl_or_start
 caret            ::= '\^'               -> #caret
 range            ::= char '-' char      -> #range
 decimal_char     ::= '\\d\d\+'          -> #decimal_char
@@ -103,11 +106,12 @@ bc_return     ::= 'return'            -> #bc_return
 bc_tab        ::= 'tab'               -> #bc_tab
 bc_escape     ::= 'escape'            -> #bc_escape
 bc_backspace  ::= 'backspace'         -> #bc_backspace
-coll_char     ::= !end_collection ( '\\]' | '.' ) -> #coll_char
+coll_chars    ::= coll_char +         -> #coll_chars
+coll_char     ::= escape ( esc | tab | cr | bs | lb ) | !'\]' ( '\\]' | '.' ) -> #coll_char
 ; Sequence
 sequence          ::= start_sequence ( collection | seq_char ) + end_sequence -> #sequence
 seq_char          ::= seq_escaped_char | !']' '.'      -> #seq_char
-seq_escaped_char  ::= esc | tab | cr | bs | lb | '\\.' -> #seq_escaped_char
+seq_escaped_char  ::= escape ( esc | tab | cr | bs | lb | '.' ) -> #seq_escaped_char
 start_sequence    ::= '\\%['             -> #start_sequence
 end_sequence      ::= '\]'               -> #end_sequence
 equivalence       ::= '\[=' char '=\]'   -> #equivalence
@@ -170,14 +174,13 @@ nl_or_uppercase            ::= 'u' -> #nl_or_uppercase
 non_uppercase              ::= 'U'  -> #non_uppercase
 nl_or_non_uppercase        ::= 'U' -> #nl_or_non_uppercase
 ; Char
-char                       ::= ( escape escaped_char ) | '[^\\[.]' -> #char
-escaped_char               ::= esc | tab | cr | bs | lb | '[^+=?&|@%{}()]' -> #escaped_char
-
-esc                        ::= 'e' -> #esc
-tab                        ::= 't' -> #tab
-cr                         ::= 'r' -> #cr
-bs                         ::= 'b' -> #bs
-lb                         ::= 'n' -> #lb
-escape                     ::= '\\'  -> #escape
-eor                        ::= '$'   -> #eor
-; ['\C', [['\m', ['\%(', ['^', ['\|', '|']], '\)']], ['\s', '*'], '\zs', ['\%(', [['\<', 'f', 'u', ['\%[', ['n', 'c', 't', 'i', 'o', 'n'], ']'], '\>'], [['\|', ['\<', ['\%(', [['w', 'h', ['\%[', ['i', 'l', 'e'], ']']], ['\|', ['f', 'o', 'r']]], '\)'], '\>']], ['\|', ['\<', 'i', 'f', '\>']], ['\|', ['\<', 't', 'r', 'y', '\>']], ['\|', ['\<', 'a', 'u', 'g', ['\%[', ['r', 'o', 'u', 'p'], ']'], ['\s', '\+'], [['\%(', ['E', 'N', 'D', '\>'], '\)'], '\@!'], '\S']]]], '\)']]]
+chars        ::= char + -> #chars
+char         ::= ( escape ! '[ACDFHIKLMOPSUVWXZacdfhiklmopsuvwx]' escaped_char ) | '[^\\[.*\]]' -> #char
+escaped_char ::= esc | tab | cr | bs | lb | '[^+=?&|@%{}()]' -> #escaped_char
+esc          ::= 'e' -> #esc
+tab          ::= 't' -> #tab
+cr           ::= 'r' -> #cr
+bs           ::= 'b' -> #bs
+lb           ::= 'n' -> #lb
+escape       ::= '\\'  -> #escape
+eor          ::= '$'   -> #eor

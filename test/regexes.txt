@@ -1,414 +1,415 @@
 # This is a comment.
 # Format is as follows:
-# start of line + regular expression + valid (1/0) + end of line
+# start of line + regular expression + space + output of string(string(result)) + space + valid (1/0) + end of line
 # Linebreak
-\n 1
-\\n 1
+\n '''<NL> => literal character.''' 1
+\\n '''\n => literal characters.''' 1
 # Backspace
-\b 1
-\\b 1
+\b '''<BS> => literal character.''' 1
+\\b '''\b => literal characters.''' 1
 # CR
-\r 1
-\\r 1
+\r '''<CR> => literal character.''' 1
+\\r '''\r => literal characters.''' 1
 # Tab
-\t 1
-\\t 1
+\t '''<Tab> => literal character.''' 1
+\\t '''\t => literal characters.''' 1
 # Esc
-\e 1
-\\e 1
+\e '''<Esc> => literal character.''' 1
+\\e '''\e => literal characters.''' 1
 # Escaped characters
-\a 1
-\g 1
-\j 1
-\t 1
-\q 1
-\l 1
-\z 1
-\p 1
-\l 1
-\ñ 1
-\ö 1
-\\ 1
-\( 0
-\? 0
-\.\ 1
-\ 1
-\  1
-\. 1
-\< 1
-\7 1
-b\a 1
-j\q 1
+\a '''\a => alphabetic.''' 1
+\g '''g => literal character.''' 1
+\j '''j => literal character.''' 1
+\t '''<Tab> => literal character.''' 1
+\q '''q => literal character.''' 1
+\l '''\l => lowercase.''' 1
+\z '''z => literal character.''' 1
+\p '''\p => printable (:help ''''isprint'''').''' 1
+\l '''\l => lowercase.''' 1
+\ñ '''ñ => literal character.''' 1
+\ö '''ö => literal character.''' 1
+\\ '''\ => literal character.''' 1
+\( '[]' 0
+\? '[]' 0
+\.\ '[''. => literal character.'', ''\'']' 1
+\ '''\''' 1
+\  '''<Space> => literal character.''' 1
+\. '''. => literal character.''' 1
+\< '''\< => start of a word.''' 1
+\7 '''\7 => back-reference to captured group 7.''' 1
+b\a '[''b => literal character.'', ''\a => alphabetic.'']' 1
+j\q '''jq => literal characters.''' 1
 # Characters
-a 1
-ba 1
-/ 1
-\~ 1
-] 1
+a '''a => literal character.''' 1
+ba '''ba => literal characters.''' 1
+/ '''/ => literal character.''' 1
+\~ '''~ => literal character.''' 1
+] '[]' 1
 # identifier
-\i 1
+\i '''\i => identifier (:help ''''isident'''').''' 1
 # nl_or_identifier
-\_i 1
+\_i '''\_i => identifier (:help ''''isident'''') or newline.''' 1
 # identifier_no_digits
-\I 1
+\I '''\I => identifier non-digit (:help ''''isident'''').''' 1
 # nl_or_identifier_no_digits
-\_I 1
+\_I '''\_I => identifier non-digit (:help ''''isident'''') or newline.''' 1
 # keyword
-\k 1
+\k '''\k => keyword (:help ''''iskeyword'''').''' 1
 # nl_or_keyword
-\_k 1
+\_k '''\_k => keyword (:help ''''iskeyword'''') or newline.''' 1
 # non_keyword
-\K 1
+\K '''\K => non-keyword (:help ''''iskeyword'''').''' 1
 # nl_or_non_keyword
-\_K 1
+\_K '''\_K => non-keyword (:help ''''iskeyword'''') or newline.''' 1
 # file_name
-\f 1
+\f '''\f => file-name (:help ''''isfname'''').''' 1
 # nl_or_file_name
-\_f 1
+\_f '''\_f => file-name (:help ''''isfname'''') or newline.''' 1
 # file_name_no_digits
-\F 1
+\F '''\F => file-name non-digit.''' 1
 # nl_or_file_name_no_digits
-\_F 1
+\_F '''\_F => file-name no-digit (:help ''''isfname'''') or newline.''' 1
 # printable
-\p 1
+\p '''\p => printable (:help ''''isprint'''').''' 1
 # nl_or_printable
-\_p 1
+\_p '''\_p => printable (:help ''''isprint'''') or newline.''' 1
 # printable_no_digits
-\P 1
+\P '''\P => printable non-digit (:help ''''isprint'''').''' 1
 # nl_or_printable_no_digits
-\_P 1
+\_P '''\_P => printable non-digit (:help ''''isprint'''') or newline.''' 1
 # whitespace
-\s 1
+\s '''\s => whitespace.''' 1
 # nl_or_whitespace
-\_s 1
+\_s '''\_s => whitespace or newline.''' 1
 # non_whitespace
-\S 1
+\S '''\S => non-whitespace.''' 1
 # nl_or_non_whitespace
-\_S 1
+\_S '''\_S => non-whitespace or newline.''' 1
 # digit
-\d 1
+\d '''\d => digit [0-9].''' 1
 # nl_or_digit
-\_d 1
+\_d '''\_d => digit [0-9] or newline.''' 1
 # non_digit
-\D 1
+\D '''\D => non-digit [^0-9].''' 1
 # nl_or_non_digit
-\_D 1
+\_D '''\_D => non-digit [0-9] or newline.''' 1
 # hex_digit
-\x 1
+\x '''\x => hex-digit [0-9a-f].''' 1
 # nl_or_hex_digit
-\_x 1
+\_x '''\_x => hex-digit [0-9a-f] or newline.''' 1
 # non_hex_digit
-\X 1
+\X '''\X => non-hex-digit [^0-9a-f].''' 1
 # nl_or_non_hex_digit
-\_X 1
+\_X '''\_X => non-hex-digit [0-9a-f] or newline.''' 1
 # octal_digit
-\o 1
+\o '''\o => octal-digit [0-7].''' 1
 # nl_or_octal_digit
-\_o 1
+\_o '''\_o => octal-digit ([0-7]) or newline.''' 1
 # non_octal_digit
-\O 1
+\O '''\O => non-octal-digit ([^0-7]).''' 1
 # nl_or_non_octal_digit
-\_O 1
+\_O '''\_O => non-octal-number ([0-7]) or newline.''' 1
 # word
-\w 1
+\w '''\w => word ([a-zA-Z0-9_]).''' 1
 # nl_or_word
-\_w 1
+\_w '''\_w => word ([a-zA-Z0-9_] or newline.''' 1
 # non_word
-\W 1
+\W '''\W => non-word ([a-zA-Z0-9_]).''' 1
 # nl_or_non_word
-\_W 1
+\_W '''\_W => non-word ([^a-zA-Z0-9_]) or newline.''' 1
 # head
-\h 1
+\h '''\h => head ([a-zA-Z_]).''' 1
 # nl_or_head
-\_h 1
+\_h '''\_h => head ([a-zA-Z_]) or newline.''' 1
 # non_head
-\H 1
+\H '''\H => non-head ([^a-zA-Z_]).''' 1
 # nl_or_non_head
-\_H 1
+\_H '''\_H => non-head (alpha or _) or newline.''' 1
 # alpha
-\a 1
+\a '''\a => alphabetic.''' 1
 # nl_or_alpha
-\_a 1
+\_a '''\_a => alphabetic or newline.''' 1
 # non_alpha
-\A 1
+\A '''\A => non-alphabetic.''' 1
 # nl_or_non_alpha
-\_A 1
+\_A '''\_A => non-alphabetic or newline.''' 1
 # lowercase
-\l 1
+\l '''\l => lowercase.''' 1
 # nl_or_lowercase
-\_l 1
+\_l '''\_l => lowercase or newline.''' 1
 # non_lowercase
-\L 1
+\L '''\L => non-lowercase.''' 1
 # nl_or_non_lowercase
-\_L 1
+\_L '''\_L => non-lowercase or newline.''' 1
 # uppercase
-\u 1
+\u '''\u => uppercase.''' 1
 # nl_or_uppercase
-\_u 1
+\_u '''\_u => uppercase or newline.''' 1
 # non_uppercase
-\U 1
+\U '''\U => non-uppercase.''' 1
 # nl_or_non_uppercase
-\_U 1
+\_U '''\_U => non-uppercase or newline.''' 1
 # Collection
-[ 0
-[] 0
-[]] 1
-[x]] 1
-[x\] 0
+[ '[]' 0
+[] '[]' 0
+[]] '[''[ => start collection.'', '']'', ''] => end collection.'']' 1
+[x]] '[]' 1
+[x\] '[]' 0
 # decimal_char
-[\d2] 1
-[\d20] 1
-[\d02] 1
-[\d12342] 1
-[\d1234298] 1
+[\d2] '[''[ => start collection.'', ''  \d2 => decimal number of character.'', ''] => end collection.'']' 1
+[\d20] '[''[ => start collection.'', ''  \d20 => decimal number of character.'', ''] => end collection.'']' 1
+[\d02] '[''[ => start collection.'', ''  \d02 => decimal number of character.'', ''] => end collection.'']' 1
+[\d12342] '[''[ => start collection.'', ''  \d12342 => decimal number of character.'', ''] => end collection.'']' 1
+[\d1234298] '[''[ => start collection.'', ''  \d1234298 => decimal number of character.'', ''] => end collection.'']' 1
 # octal_char
-[\o10] 1
-[\o0023] 1
-[\o89] 1
-[\o0001] 1
-[\o00001] 1
+[\o10] '[''[ => start collection.'', ''  \o10 => octal number of character up to 0377.'', ''] => end collection.'']' 1
+[\o0023] '[''[ => start collection.'', ''  \o0023 => octal number of character up to 0377.'', ''] => end collection.'']' 1
+[\o89] '[''[ => start collection.'', ''  \o89 => literal character(s).'', ''] => end collection.'']' 1
+[\o0001] '[''[ => start collection.'', ''  \o0001 => octal number of character up to 0377.'', ''] => end collection.'']' 1
+[\o00001] '[''[ => start collection.'', ''  \o0000 => octal number of character up to 0377.'', ''  1 => literal character(s).'', ''] => end collection.'']' 1
 # hex_char_low
-[\x0a] 1
-[\xba] 1
-[\xnba] 1
+[\x0a] '[''[ => start collection.'', ''  \x0a => hexadecimal number of multibyte character up to 0xff.'', ''] => end collection.'']' 1
+[\xba] '[''[ => start collection.'', ''  \xba => hexadecimal number of multibyte character up to 0xff.'', ''] => end collection.'']' 1
+[\xnba] '[''[ => start collection.'', ''  \xnba => literal character(s).'', ''] => end collection.'']' 1
 # hex_char_medium
-[\u1] 1
-[\u15] 1
-[\uf15] 1
-[\ufb15] 1
+[\u1] '[''[ => start collection.'', ''  \u1 => hexadecimal number of multibyte character up to 0xffff.'', ''] => end collection.'']' 1
+[\u15] '[''[ => start collection.'', ''  \u15 => hexadecimal number of multibyte character up to 0xffff.'', ''] => end collection.'']' 1
+[\uf15] '[''[ => start collection.'', ''  \uf15 => hexadecimal number of multibyte character up to 0xffff.'', ''] => end collection.'']' 1
+[\ufb15] '[''[ => start collection.'', ''  \ufb15 => hexadecimal number of multibyte character up to 0xffff.'', ''] => end collection.'']' 1
 # hex_char_high
-[\U1] 1
-[\U1f] 1
-[\U1fb] 1
-[\U1fb3] 1
-[\U1fb3c] 1
-[\U1fb3c30] 1
-[\U1fb3c30a] 1
+[\U1] '[''[ => start collection.'', ''  \U1 => hexadecimal number of multibyte character up to 0xffffffff.'', ''] => end collection.'']' 1
+[\U1f] '[''[ => start collection.'', ''  \U1f => hexadecimal number of multibyte character up to 0xffffffff.'', ''] => end collection.'']' 1
+[\U1fb] '[''[ => start collection.'', ''  \U1fb => hexadecimal number of multibyte character up to 0xffffffff.'', ''] => end collection.'']' 1
+[\U1fb3] '[''[ => start collection.'', ''  \U1fb3 => hexadecimal number of multibyte character up to 0xffffffff.'', ''] => end collection.'']' 1
+[\U1fb3c] '[''[ => start collection.'', ''  \U1fb3c => hexadecimal number of multibyte character up to 0xffffffff.'', ''] => end collection.'']' 1
+[\U1fb3c30] '[''[ => start collection.'', ''  \U1fb3c30 => hexadecimal number of multibyte character up to 0xffffffff.'', ''] => end collection.'']' 1
+[\U1fb3c30a] '[''[ => start collection.'', ''  \U1fb3c30a => hexadecimal number of multibyte character up to 0xffffffff.'', ''] => end collection.'']' 1
 # bc_alpha
-[[:alpha:]] 1
+[[:alpha:]] '[''[ => start collection.'', ''  [:alpha:] => letters.'', ''] => end collection.'']' 1
 # bc_alnum
-[[:alnum:]] 1
+[[:alnum:]] '[''[ => start collection.'', ''  [:alnum:] => letters and digits.'', ''] => end collection.'']' 1
 # bc_blank
-[[:blank:]] 1
+[[:blank:]] '[''[ => start collection.'', ''  [:blank:] => space and tab characters.'', ''] => end collection.'']' 1
 # bc_cntrl
-[[:cntrl:]] 1
+[[:cntrl:]] '[''[ => start collection.'', ''  [:cntrl:] => control character.'', ''] => end collection.'']' 1
 # bc_digit
-[[:digit:]] 1
+[[:digit:]] '[''[ => start collection.'', ''  [:digit:] => decimal digit.'', ''] => end collection.'']' 1
 # bc_graph
-[[:graph:]] 1
+[[:graph:]] '[''[ => start collection.'', ''  [:graph:] => printable character including space.'', ''] => end collection.'']' 1
 # bc_lower
-[[:lower:]] 1
+[[:lower:]] '[''[ => start collection.'', ''  [:lower:] => loercase letters (all letters when ''''ignorecase'''' is used).'', ''] => end collection.'']' 1
 # bc_print
-[[:print:]] 1
+[[:print:]] '[''[ => start collection.'', ''  [:print:] => printable character including space.'', ''] => end collection.'']' 1
 # bc_punct
-[[:punct:]] 1
+[[:punct:]] '[''[ => start collection.'', ''  [:punct:] => punctuation.'', ''] => end collection.'']' 1
 # bc_space
-[[:space:]] 1
+[[:space:]] '[''[ => start collection.'', ''  [:space:] => space.'', ''] => end collection.'']' 1
 # bc_upper
-[[:upper:]] 1
+[[:upper:]] '[''[ => start collection.'', ''  [:upper:] => uppercase letters (all letters when ''''ignorecase'''' is used).'', ''] => end collection.'']' 1
 # bc_xdigit
-[[:xdigit:]] 1
+[[:xdigit:]] '[''[ => start collection.'', ''  [:xdigit:] => hexadecimal digits.'', ''] => end collection.'']' 1
 # bc_return
-[[:return:]] 1
+[[:return:]] '[''[ => start collection.'', ''  [:return:] => return character.'', ''] => end collection.'']' 1
 # bc_tab
-[[:tab:]] 1
+[[:tab:]] '[''[ => start collection.'', ''  [:tab:] => tab character.'', ''] => end collection.'']' 1
 # bc_escape
-[[:escape:]] 1
+[[:escape:]] '[''[ => start collection.'', ''  [:escape:] => escape character.'', ''] => end collection.'']' 1
 # bc_backspace
-[[:backspace:]] 1
+[[:backspace:]] '[''[ => start collection.'', ''  [:backspace:] => backspace character.'', ''] => end collection.'']' 1
 # equivalence
-[[=x=]] 1
+[[=x=]] '[''[ => start collection.'', ''  [=x=] => equivalence class.'', ''] => end collection.'']' 1
 # collation
-[[.x.]] 1
+[[.x.]] '[''[ => start collection.'', ''  [.x.] => collation element.'', ''] => end collection.'']' 1
 # back_reference
-\1 1
-\2 1
-\3 1
-\4 1
-\5 1
-\6 1
-\7 1
-\8 1
-\9 1
+\1 '''\1 => back-reference to captured group 1.''' 1
+\2 '''\2 => back-reference to captured group 2.''' 1
+\3 '''\3 => back-reference to captured group 3.''' 1
+\4 '''\4 => back-reference to captured group 4.''' 1
+\5 '''\5 => back-reference to captured group 5.''' 1
+\6 '''\6 => back-reference to captured group 6.''' 1
+\7 '''\7 => back-reference to captured group 7.''' 1
+\8 '''\8 => back-reference to captured group 8.''' 1
+\9 '''\9 => back-reference to captured group 9.''' 1
 # Sequence
-\%[ 0
-\%[] 0
-\%[x] 1
-a\%[bc] 1
-\%[[x]] 1
-\%[]x] 0
-\%[x]] 1
-\%[a]] 1
+\%[ '[]' 0
+\%[] '[]' 0
+\%[x] '[''  \%[ => start of optional sequence.'', ''x'', ''] => end of optional sequence.'']' 1
+a\%[bc] '[''a => literal character.'', ''  \%[ => start of optional sequence.'', ''b'', ''c'', ''] => end of optional sequence.'']' 1
+\%[[x]] '[''  \%[ => start of optional sequence.'', ''  [ => start collection.'', ''  x => literal character(s).'', ''] => end collection.'', ''] => end of optional sequence.'']' 1
+\%[]x] '[]' 0
+\%[x]] '[]' 1
+\%[a]] '[]' 1
 # bol
-^ 1
+^ ''' => start of line.''' 1
 # bol_any
-\_^ 1
+\_^ '''\_^ => start of line, anywhere in the pattern.''' 1
 # eol
-$ 1
+$ ''' => end of line.''' 1
 # eol_any
-\_$ 1
+\_$ '''\_$ => end of line, anywhere in the pattern.''' 1
 # bow
-\< 1
+\< '''\< => start of a word.''' 1
 # eow
-\> 1
+\> '''\> => end of a word.''' 1
 # zs
-\zs 1
+\zs '''\zs => start of match.''' 1
 # ze
-\ze 1
+\ze '''\ze => end of match.''' 1
 # bof
-\%$ 1
+\%$ '''\%$ => end of filen''' 1
 # eof
-\%^ 1
+\%^ '''\%^ => start of file.''' 1
 # visual
-\%V 1
+\%V '''\%V => inside the Visual area.''' 1
 # cursor
-\%# 1
+\%# '''\%# => current cursor position.''' 1
 # mark
-\%'1 1
-\%'5 1
-\%'a 1
-\%'x 1
-\%'< 1
-\%'> 1
-\%'' 1
-\%'[ 1
-\%'] 1
-\%'" 1
-\%'^ 1
-\%'. 1
-\%'( 1
-\%') 1
-\%'{ 1
-\%'} 1
-\%'+ 0
+\%'1 '''\%''''1 => mark 1.''' 1
+\%'5 '''\%''''5 => mark 5.''' 1
+\%'a '''\%''''a => mark a.''' 1
+\%'x '''\%''''x => mark x.''' 1
+\%'< '''\%''''< => mark <.''' 1
+\%'> '''\%''''> => mark >.''' 1
+\%'' '''\%'''''''' => mark ''''.''' 1
+\%'[ '''\%''''[ => mark [.''' 1
+\%'] '''\%''''] => mark ].''' 1
+\%'" '''\%''''" => mark ".''' 1
+\%'^ '''\%''''^ => mark ^.''' 1
+\%'. '''\%''''. => mark ..''' 1
+\%'( '''\%''''( => mark (.''' 1
+\%') '''\%'''') => mark ).''' 1
+\%'{ '''\%''''{ => mark {.''' 1
+\%'} '''\%''''} => mark }.''' 1
+\%'+ '[]' 0
 # line
-\%3l 1
-\%678l 1
+\%3l '''\%3l => line 3.''' 1
+\%678l '''\%678l => line 678.''' 1
 # column
-\%1234c 1
+\%1234c '''\%1234c => column 1234.''' 1
 # virtual_column
-\%1234v 1
+\%1234v '''\%1234v => virtual column 1234.''' 1
 # dot
-. 1
+. '''. => any single character.''' 1
 # nl_or_dot
-\_. 1
+\_. '''\_. => any single character or end of line.''' 1
 # at_ahead
-\@= 0
-x\@= 1
+\@= '[]' 0
+x\@= '[''x => literal character.'', ''\@= => positive lookahead: previous atom present ? match : no match. of the previous atom.'']' 1
 # at_no_ahead
-\@! 0
-x\@! 1
+\@! '[]' 0
+x\@! '[''x => literal character.'', ''\@! => negative lookahead: previous atom present ? no match : match. of the previous atom.'']' 1
 # at_behind
-\@<= 0
-x\@<= 1
+\@<= '[]' 0
+x\@<= '[''x => literal character.'', ''\@<= => positive lookbehind: previous atom present ? match : no match. of the previous atom.'']' 1
 # at_no_behind
-\@<! 0
-x\@<! 1
+\@<! '[]' 0
+x\@<! '[''x => literal character.'', ''\@<! => negative lookbehind: previous atom present ? no match : match. of the previous atom.'']' 1
 # at_whole
-\@> 0
-x\@> 1
+\@> '[]' 0
+x\@> '[''x => literal character.'', ''\@> => match the preceding atom like matching a whole pattern. of the previous atom.'']' 1
 # star
-* 1
-x* 1
+* '[]' 1
+x* '[''x => literal character.'', ''* => zero or more of the previous atom.'']' 1
 # plus
-\+ 0
-x\+ 1
+\+ '[]' 0
+x\+ '[''x => literal character.'', ''\+ => one or more of the previous atom.'']' 1
 # equal
-\= 0
-x\= 1
+\= '[]' 0
+x\= '[''x => literal character.'', ''\= => zero or one of the previous atom.'']' 1
 # question
-\? 0
-x\? 1
+\? '[]' 0
+x\? '[''x => literal character.'', ''\? => zero or one of the previous atom.'']' 1
 # Group
-\( 0
-\) 0
-\(\) 1
-\(x\) 1
-\() 0
-\(\(b\)\ 0
-\(\(b\)\) 1
-\%( 0
-\) 0
-\%(\) 1
-\%(x\) 1
-\%() 0
-\%(\%(b\)\ 0
-\%(\%(b\)\) 1
+\( '[]' 0
+\) '[]' 0
+\(\) '[''\( => start capture group.'', ''\) => end capture group.'']' 1
+\(x\) '[''\( => start capture group.'', ''  x => literal character.'', ''\) => end capture group.'']' 1
+\() '[]' 0
+\(\(b\)\ '[]' 0
+\(\(b\)\) '[''\( => start capture group.'', ''  \( => start capture group.'', ''  b => literal character.'', ''\) => end capture group.'', ''\) => end capture group.'']' 1
+\%( '[]' 0
+\) '[]' 0
+\%(\) '[''\%( => start non-capture group.'', ''\) => end non-capture group.'']' 1
+\%(x\) '[''\%( => start non-capture group.'', ''  x => literal character.'', ''\) => end non-capture group.'']' 1
+\%() '[]' 0
+\%(\%(b\)\ '[]' 0
+\%(\%(b\)\) '[''\%( => start non-capture group.'', ''  \%( => start non-capture group.'', ''  b => literal character.'', ''\) => end non-capture group.'', ''\) => end non-capture group.'']' 1
 # ignore_comb_chars
-\Z 1
-x\Z 1
-\Zx 1
+\Z '[''\'', ''\Z => ignore differences in Unicode "combining characters".'']' 1
+x\Z '[''x => literal character.'', ''\Z => ignore differences in Unicode "combining characters".'']' 1
+\Zx '[[''\'', ''\Z => ignore differences in Unicode "combining characters".''], ''x => literal character.'']' 1
 # ignore_case
-\c 1
-x\c 1
-\cx 1
+\c '[''\'', ''\c => ignore case.'']' 1
+x\c '[''x => literal character.'', ''\c => ignore case.'']' 1
+\cx '[[''\'', ''\c => ignore case.''], ''x => literal character.'']' 1
 # match_case
-\C 1
-x\C 1
-\Cx 1
+\C '[''\'', ''\C => match case.'']' 1
+x\C '[''x => literal character.'', ''\C => match case.'']' 1
+\Cx '[[''\'', ''\C => match case.''], ''x => literal character.'']' 1
 # magic
-\m 0
-x\m 1
-\mx 1
+\m '[]' 0
+x\m '[''x => literal character.'', ''\m => magic.'']' 1
+\mx '[''\m => magic.'', ''x => literal character.'']' 1
 # no_magic
-\M 0
-x\M 1
-\Mx 1
+\M '[]' 0
+x\M '[''x => literal character.'', ''\M => non-magic.'']' 1
+\Mx '[''\M => non-magic.'', ''x => literal character.'']' 1
 # very_magic
-\v 0
-x\v 1
-\vx 1
+\v '[]' 0
+x\v '[''x => literal character.'', ''\v => very magic.'']' 1
+\vx '[''\v => very magic.'', ''x => literal character.'']' 1
 # very_no_magic
-\V 0
-x\V 1
-\Vx 1
+\V '[]' 0
+x\V '[''x => literal character.'', ''\V => very non-magic.'']' 1
+\Vx '[''\V => very non-magic.'', ''x => literal character.'']' 1
 # Concat
-\& 0
-a\& 0
-a\&b 1
+\& '[]' 0
+a\& '[]' 0
+a\&b '[''a => literal character.'', ''\& => previous atom and next atom are required together (''''and'''').'', ''  b => literal character.'']' 1
 # Branch
-\| 0
-\| a 0
-a\|b 1
-a \| 0
+\| '[]' 0
+\| a '[]' 0
+a\|b '[''a => literal character.'', ''\| => previous atom and next atom are alternate choices (''''or'''').'', ''  b => literal character.'']' 1
+a \| '[]' 0
 # Multiple strings from http://oniguruma.rubyforge.org/svn/test/test_oniguruma.rb
-\(3.\)\(.*\&b*\)\(3.\) 1
-c\(.\)t 1
-\(3.\)\(.*\)\(3.\)\) 0
-\(3.\)\(.*\)\(3.\) 1
-1\+2\+ 1
-\(?<=2\)1\+2\+ 1
-\(3.\)\(.*\)\(3.\) 1
-pe 1
-(\?#\(\w\+?\)) 1
-expression 1
-^[a-z]*$ 1
-^[A-Z]*$ 1
-. 1
-SIT 1
-at 1
-/cat/im 1
-\Cxcat 1
-\(3.\)\(.*\)\(3.\) 1
-\(3.\)\(ab\|.*\)\(3.\) 1
-abc 1
-\(\w\+?\)\d\+\(\w\+\) 1
-Date:\(\d\{4}\)/\(\d\{2}\)/\(\d\{2}\) 1
-\(test\).\+\(\k<Ð³Ñ€ÑƒÐ¿Ð¿Ð°>\) 1
-\(.\)\(.\)\(\d\+\)\(\d\) 1
-ca 1
-^\s*?\(\n|\r\) 1
-\(?<begin>(\)\(?<body>.*\)\(?<end>)\) 1
-\(?<Ð¸Ð¼Ñ>test\).\+\(\k<Ð¸Ð¼Ñ>\) 1
-\(.\+\).\+\(.\+\) 1
-\(?<a>.\+\).\+\(?<b>.\+\) 1
-\([Ð°-Ñ]\)\+ 1
-Ñ€\(ÑƒÐ±Ð¸.*\) 1
-\([Ð°-Ñ]\)\([Ð°-Ñ]\)\([Ð°-Ñ]\+\) 1
-[Ð°-Ñ] 1
-12345 1
-214365 1
-\(.\)\(.\) 1
-\([^aeiou]\) 1
-[aeiou] 1
-\([aeiou]\) 1
+\(3.\)\(.*\&b*\)\(3.\) '[''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  . => any single character.'', ''  * => zero or more of the previous atom.'', ''\& => previous atom and next atom are required together (''''and'''').'', ''  b => literal character.'', ''  * => zero or more of the previous atom.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'']' 1
+c\(.\)t '[''c => literal character.'', ''\( => start capture group.'', ''  . => any single character.'', ''\) => end capture group.'', ''t => literal character.'']' 1
+\(3.\)\(.*\)\(3.\)\) '[]' 0
+\(3.\)\(.*\)\(3.\) '[''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  . => any single character.'', ''  * => zero or more of the previous atom.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'']' 1
+1\+2\+ '[''1 => literal character.'', ''\+ => one or more of the previous atom.'', ''2 => literal character.'', ''\+ => one or more of the previous atom.'']' 1
+\(?<=2\)1\+2\+ '[''\( => start capture group.'', ''  ?<=2 => literal characters.'', ''\) => end capture group.'', ''1 => literal character.'', ''\+ => one or more of the previous atom.'', ''2 => literal character.'', ''\+ => one or more of the previous atom.'']' 1
+\(3.\)\(.*\)\(3.\) '[''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  . => any single character.'', ''  * => zero or more of the previous atom.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'']' 1
+pe '''pe => literal characters.''' 1
+(\?#\(\w\+?\)) '[''( => literal character.'', ''\? => zero or one of the previous atom.'', ''# => literal character.'', ''\( => start capture group.'', ''  \w => word ([a-zA-Z0-9_]).'', ''  \+ => one or more of the previous atom.'', ''  ? => literal character.'', ''\) => end capture group.'', '') => literal character.'']' 1
+expression '''expression => literal characters.''' 1
+^[a-z]*$ '['' => start of line.'', ''[ => start collection.'', ''  a-z => range of chars from a to z.'', ''] => end collection.'', ''* => zero or more of the previous atom.'', '' => end of line.'']' 1
+^[A-Z]*$ '['' => start of line.'', ''[ => start collection.'', ''  A-Z => range of chars from A to Z.'', ''] => end collection.'', ''* => zero or more of the previous atom.'', '' => end of line.'']' 1
+. '''. => any single character.''' 1
+SIT '''SIT => literal characters.''' 1
+at '''at => literal characters.''' 1
+/cat/im '''/cat/im => literal characters.''' 1
+\Cxcat '[[''\'', ''\C => match case.''], ''xcat => literal characters.'']' 1
+\(3.\)\(.*\)\(3.\) '[''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  . => any single character.'', ''  * => zero or more of the previous atom.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'']' 1
+\(3.\)\(ab\|.*\)\(3.\) '[''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  ab => literal characters.'', ''\| => previous atom and next atom are alternate choices (''''or'''').'', ''  . => any single character.'', ''  * => zero or more of the previous atom.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'']' 1
+abc '''abc => literal characters.''' 1
+\(\w\+?\)\d\+\(\w\+\) '[''\( => start capture group.'', ''  \w => word ([a-zA-Z0-9_]).'', ''  \+ => one or more of the previous atom.'', ''  ? => literal character.'', ''\) => end capture group.'', ''\d => digit [0-9].'', ''\+ => one or more of the previous atom.'', ''\( => start capture group.'', ''  \w => word ([a-zA-Z0-9_]).'', ''  \+ => one or more of the previous atom.'', ''\) => end capture group.'']' 1
+Date:\(\d\{4}\)/\(\d\{2}\)/\(\d\{2}\) '[''Date: => literal characters.'', ''\( => start capture group.'', ''  \d => digit [0-9].'', ''  {4} => many as possible "greedy" match, exactly 4 of the previous atom.'', ''\) => end capture group.'', ''/ => literal character.'', ''\( => start capture group.'', ''  \d => digit [0-9].'', ''  {2} => many as possible "greedy" match, exactly 2 of the previous atom.'', ''\) => end capture group.'', ''/ => literal character.'', ''\( => start capture group.'', ''  \d => digit [0-9].'', ''  {2} => many as possible "greedy" match, exactly 2 of the previous atom.'', ''\) => end capture group.'']' 1
+\(test\).\+\(\k<Ð³Ñ€ÑƒÐ¿Ð¿Ð°>\) '[''\( => start capture group.'', ''  test => literal characters.'', ''\) => end capture group.'', ''. => any single character.'', ''\+ => one or more of the previous atom.'', ''\( => start capture group.'', ''  \k => keyword (:help ''''iskeyword'''').'', ''  <Ð³Ñ€ÑƒÐ¿Ð¿Ð°> => literal characters.'', ''\) => end capture group.'']' 1
+\(.\)\(.\)\(\d\+\)\(\d\) '[''\( => start capture group.'', ''  . => any single character.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  . => any single character.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  \d => digit [0-9].'', ''  \+ => one or more of the previous atom.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  \d => digit [0-9].'', ''\) => end capture group.'']' 1
+ca '''ca => literal characters.''' 1
+^\s*?\(\n|\r\) '['' => start of line.'', ''\s => whitespace.'', ''* => zero or more of the previous atom.'', ''? => literal character.'', ''\( => start capture group.'', ''  <NL>|<CR> => literal characters.'', ''\) => end capture group.'']' 1
+\(?<begin>(\)\(?<body>.*\)\(?<end>)\) '[''\( => start capture group.'', ''  ?<begin>( => literal characters.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  ?<body> => literal characters.'', ''  . => any single character.'', ''  * => zero or more of the previous atom.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  ?<end>) => literal characters.'', ''\) => end capture group.'']' 1
+\(?<Ð¸Ð¼Ñ>test\).\+\(\k<Ð¸Ð¼Ñ>\) '[''\( => start capture group.'', ''  ?<Ð¸Ð¼Ñ>test => literal characters.'', ''\) => end capture group.'', ''. => any single character.'', ''\+ => one or more of the previous atom.'', ''\( => start capture group.'', ''  \k => keyword (:help ''''iskeyword'''').'', ''  <Ð¸Ð¼Ñ> => literal characters.'', ''\) => end capture group.'']' 1
+\(.\+\).\+\(.\+\) '[''\( => start capture group.'', ''  . => any single character.'', ''  \+ => one or more of the previous atom.'', ''\) => end capture group.'', ''. => any single character.'', ''\+ => one or more of the previous atom.'', ''\( => start capture group.'', ''  . => any single character.'', ''  \+ => one or more of the previous atom.'', ''\) => end capture group.'']' 1
+\(?<a>.\+\).\+\(?<b>.\+\) '[''\( => start capture group.'', ''  ?<a> => literal characters.'', ''  . => any single character.'', ''  \+ => one or more of the previous atom.'', ''\) => end capture group.'', ''. => any single character.'', ''\+ => one or more of the previous atom.'', ''\( => start capture group.'', ''  ?<b> => literal characters.'', ''  . => any single character.'', ''  \+ => one or more of the previous atom.'', ''\) => end capture group.'']' 1
+\([Ð°-Ñ]\)\+ '[''\( => start capture group.'', ''  [ => start collection.'', ''  Ð°-Ñ => literal character(s).'', ''] => end collection.'', ''\) => end capture group.'', ''\+ => one or more of the previous atom.'']' 1
+Ñ€\(ÑƒÐ±Ð¸.*\) '['' => literal characters.'', ''\( => start capture group.'', ''   => literal characters.'', ''  . => any single character.'', ''  * => zero or more of the previous atom.'', ''\) => end capture group.'']' 1
+\([Ð°-Ñ]\)\([Ð°-Ñ]\)\([Ð°-Ñ]\+\) '[''\( => start capture group.'', ''  [ => start collection.'', ''  Ð°-Ñ => literal character(s).'', ''] => end collection.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  [ => start collection.'', ''  Ð°-Ñ => literal character(s).'', ''] => end collection.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  [ => start collection.'', ''  Ð°-Ñ => literal character(s).'', ''] => end collection.'', ''\+ => one or more of the previous atom.'', ''\) => end capture group.'']' 1
+[Ð°-Ñ] '[''[ => start collection.'', ''  Ð°-Ñ => literal character(s).'', ''] => end collection.'']' 1
+12345 '''12345 => literal characters.''' 1
+214365 '''214365 => literal characters.''' 1
+\(.\)\(.\) '[''\( => start capture group.'', ''  . => any single character.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  . => any single character.'', ''\) => end capture group.'']' 1
+\([^aeiou]\) '[''\( => start capture group.'', ''  [ => start collection.'', ''  ^ => caret.'', ''  aeiou => literal character(s).'', ''] => end collection.'', ''\) => end capture group.'']' 1
+[aeiou] '[''[ => start collection.'', ''  aeiou => literal character(s).'', ''] => end collection.'']' 1
+\([aeiou]\) '[''\( => start capture group.'', ''  [ => start collection.'', ''  aeiou => literal character(s).'', ''] => end collection.'', ''\) => end capture group.'']' 1
+#  vim:ft=retests

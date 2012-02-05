@@ -9,3 +9,4 @@ tags
 *.msgout
 *.tap
 *.out
+autoload/vimregextools/parser.vim
