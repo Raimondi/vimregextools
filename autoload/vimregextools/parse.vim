@@ -1,18 +1,21 @@
-let s:indent_level = 0
-let s:capture_level = 0
-let s:debug = 0
+unlet! s:indent_level s:capture_level s:bol_stack
 " TODO: nr2char() for number representations.
+command! -nargs=+ RE echo vimregextools#parse#match('<args>').value
 function! ChLvl(sign) "{{{1
   let s:indent_level = a:sign == '+' ? 1 : -1
 endfunction "ChLvl
 
-function! IndentLvl() "{{{1
+function! IndentLvl(...) "{{{1
   return repeat(' ', s:indent_level * 2)
 endfunction "IndentLvl
 
-function! vimregextools#parse#match(re) "{{{1
+function! vimregextools#parse#match(re, ...) "{{{1
+  let s:debug = a:0 ? a:1 : 0
+  " Output indentation.
   let s:indent_level = 0
   let s:capture_level = 0
+  let s:bol_stack = [0]
+  let s:eol_level = 0
   call Debug(string(a:re))
   redir => g:log
   let result = g:vimregextools#parser#now.match(a:re)
@@ -49,7 +52,7 @@ function! L2s(l) "{{{1
   endif
 endfunction "s:l2s
 
-function! NoEmpty(arg) "{{{
+function! NoEmpty(arg) "{{{1
   if type(a:arg) != type([])
     return a:arg
   endif
@@ -70,8 +73,7 @@ function! NoEmpty(arg) "{{{
   endif
   return result
 endfunction "NoEmpty }}}
-
-function! Flatten(arg) "{{{
+function! Flatten(arg) "{{{1
   if type(a:arg) != type([])
     return a:arg
   endif
@@ -95,7 +97,6 @@ function! Flatten(arg) "{{{
     return a:arg
   endif
 endfunction "Flatten }}}
-
 "regexp() {{{1
 function! vimregextools#parse#regexp(elems) abort
   " regexp ::= legal_flag ? pattern eor -> #regexp
@@ -123,7 +124,8 @@ function! vimregextools#parse#or(elems) abort
   call ChLvl('-')
   let result = IndentLvl() . name . " => previous atom and next atom are alternate choices ('or')."
   call ChLvl('+')
-  call Debug('or: ' . string(result))
+  let s:bol_stack[-1] = get(s:bol_stack, -2, 0)
+  call Debug('or: ' . string(result) . ' -> ' . string(s:bol_stack))
   return result
 endfunction "vimregextools#parser#or
 
@@ -144,7 +146,8 @@ function! vimregextools#parse#and(elems) abort
   call ChLvl('-')
   let result = IndentLvl() . name . " => previous atom and next atom are required together ('and')."
   call ChLvl('+')
-  call Debug('and: ' . string(result))
+  let s:bol_stack[-1] = get(s:bol_stack, -2, 0)
+  call Debug('and: ' . string(result) . ' -> ' . string(s:bol_stack))
   return result
 endfunction "vimregextools#parser#and
 
@@ -171,6 +174,10 @@ function! vimregextools#parse#atom(elems) abort
   " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
   let name = 'atom'
   let result = NoEmpty(a:elems)
+  if type(result) == type([])
+  call Debug('atom: ' . string(result))
+    call map(result, 'substitute(v:val, ''^\s\{''.((s:eol_level+1)*2).'',}\$ => \zsend of line'', ''literal character'', "")')
+  endif
   call Debug('atom: ' . string(result))
   return result
 endfunction "vimregextools#parser#atom
@@ -306,7 +313,8 @@ function! vimregextools#parse#open_capture_group(elems) abort
   "let result = NoEmpty(a:elems)
   let result = IndentLvl() . name . " => start capture group."
   call ChLvl('+')
-  call Debug('open_capture_group: ' . string(result))
+  call add(s:bol_stack, get(s:bol_stack, -1, 0))
+  call Debug('open_capture_group: ' . string(result) . ' -> ' . string(s:bol_stack))
   return result
 endfunction "vimregextools#parser#open_capture_group
 
@@ -317,29 +325,32 @@ function! vimregextools#parse#open_non_capture_group(elems) abort
   "let result = NoEmpty(a:elems)
   let result = IndentLvl() . name . " => start non-capture group."
   call ChLvl('+')
-  call Debug('open_non_capture_group: ' . string(result))
+  call add(s:bol_stack, get(s:bol_stack, -1, 0))
+  call Debug('open_non_capture_group: ' . string(result) . ' -> ' . string(s:bol_stack))
   return result
 endfunction "vimregextools#parser#open_non_capture_group
 
-"close_group() {{{1
+"close_non_capture_group() {{{1
 function! vimregextools#parse#close_non_capture_group(elems) abort
   " close_non_capture_group ::= '\\)' -> #close_non_capture_group
   let name = '\)'
   "let result = NoEmpty(a:elems)
   call ChLvl('-')
   let result = IndentLvl() . name . " => end non-capture group."
-  call Debug('close_non_capture_group: ' . string(result))
+  call remove(s:bol_stack, -1)
+  call Debug('close_non_capture_group: ' . string(result) . ' -> ' . string(s:bol_stack))
   return result
 endfunction "vimregextools#parser#close_non_capture_group
 
-"close_group() {{{1
+"close_capture_group() {{{1
 function! vimregextools#parse#close_capture_group(elems) abort
   " close_capture_group ::= '\\)' -> #close_group
   let name = '\)'
   "let result = NoEmpty(a:elems)
   call ChLvl('-')
   let result = IndentLvl() . name . " => end capture group."
-  call Debug('close_capture_group: ' . string(result))
+  call remove(s:bol_stack, -1)
+  call Debug('close_capture_group: ' . string(result) . ' -> ' . string(s:bol_stack))
   return result
 endfunction "vimregextools#parser#close_capture_group
 
@@ -559,6 +570,7 @@ function! vimregextools#parse#ordinary_atom(elems) abort
   let name = 'ordinary_atom'
   let result = NoEmpty(a:elems)
   call Debug('ordinary_atom: ' . string(result))
+  let s:bol_stack[-1] = 1
   return result
 endfunction "vimregextools#parser#ordinary_atom
 
@@ -586,7 +598,7 @@ endfunction "vimregextools#parser#nl_or_dot
 function! vimregextools#parse#anchor(elems) abort
   " anchor ::= bol | bol_any | eol | eol_any | bow | eow | zs | ze | bof | eof | visual | cursor | mark | line | column | virtual_column -> #anchor
   let name = 'anchor'
-  let result = NoEmpty(a:elems)[1:]
+  let result = NoEmpty(a:elems)
   call Debug('anchor: ' . string(result))
   return result
 endfunction "vimregextools#parser#anchor
@@ -596,7 +608,11 @@ function! vimregextools#parse#bol(elems) abort
   " bol ::= '\^' -> #bol
   let name = '^'
   "let result = NoEmpty(a:elems)
-  let result = IndentLvl() . name . " => start of line."
+  if get(s:bol_stack, -1, 0)
+    let result = IndentLvl() . name . " => literal character."
+  else
+    let result = IndentLvl() . name . " => start of line."
+  endif
   call Debug('bol: ' . string(result))
   return result
 endfunction "vimregextools#parser#bol
@@ -617,6 +633,7 @@ function! vimregextools#parse#eol(elems) abort
   let name = '$'
   "let result = NoEmpty(a:elems)
   let result = IndentLvl() . name . " => end of line."
+  let s:eol_level = s:indent_level
   call Debug('eol: ' . string(result))
   return result
 endfunction "vimregextools#parser#eol
@@ -1712,6 +1729,7 @@ function! vimregextools#parse#char(elems) abort
   call Debug(string(a:elems))
   let result = type(a:elems) == type ('') ? a:elems : len(a:elems) == 1 ? a:elems[0] : a:elems[2]
   let result = substitute(result, ' ', '<Space>', 'g')
+  let result = IndentLvl() . result . " => literal character."
   "if type(a:elems[0]) == type([])
   "  let name = a:elems[0][1]
   "else
@@ -1791,12 +1809,12 @@ function! vimregextools#parse#escape(elems) abort
   return result
 endfunction "vimregextools#parser#escape
 
-"eor() {{{1
-function! vimregextools#parse#eor(elems) abort
-  " eor ::= '$' -> #eor
-  let name = 'eor'
+"eore() {{{1
+function! vimregextools#parse#eore(elems) abort
+  " eore ::= '$' -> #eore
+  let name = 'eore'
   let result = NoEmpty(a:elems)
-  call Debug('eor: ' . string(result))
+  call Debug('eore: ' . string(result))
   return result
-endfunction "vimregextools#parser#eor
+endfunction "vimregextools#parser#eore
 
