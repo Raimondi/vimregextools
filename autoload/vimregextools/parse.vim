@@ -15,6 +15,10 @@ command! -nargs=+ -count RE echo vimregextools#parse#match(<q-args>, <count>).va
 "unlet f
 function! vimregextools#parse#match(re, ...) "{{{1
   let s:debug = a:0 ? a:1 : 0
+  " Case matching
+  let s:ignore_case = 0
+  " Ignore composing chars
+  let s:ignore_composing = 0
   " Output indentation.
   let s:indent_level = 0
   let s:capture_level = 0
@@ -27,6 +31,23 @@ function! vimregextools#parse#match(re, ...) "{{{1
   let g:output = 1
   return result
 endfunction "Parse
+
+function! vimregextools#parse#walk(ast, visitor, ...) "{{{1
+  return a:0 ? s:walk(a:ast, a:visitor, a:1) : s:walk(a:ast, a:visitor)
+endfunction
+
+function! s:walk(ast, visitor, ...) " {{{1
+  return type(a:ast) != type({}) ? a:ast
+        \ : ( a:0 ? call(a:visitor, [a:ast], a:1) : call(a:visitor, [a:ast]) )
+endfunction
+
+function! s:fix_eol(ast) "{{{1
+  let a = copy(a:ast)
+  call map(a.v, 'type(v:val) == type("") && v:val == "\\_$"'
+        \ . '? "$" : s:walk(v:val, "s:fix_eol")')
+  return a
+endfunction
+
 function! s:ChLvl(sign) "{{{1
   let s:indent_level = a:sign == '+' ? 1 : -1
 endfunction "s:ChLvl
@@ -58,7 +79,7 @@ function! vimregextools#parse#regexp(elems) abort
     call extend(result.v, a:elems[0])
   endif
   if !empty(a:elems[1])
-    if type(a:elems[1][0]) == type([]) && len(a:elems[1][0]) == 1
+    if type(a:elems[1][0]) == type([]) && len(a:elems[1]) == 1
       call extend(result.v, a:elems[1][0])
     else
       call add(result.v, a:elems[1][0])
@@ -67,6 +88,8 @@ function! vimregextools#parse#regexp(elems) abort
   if !empty(a:elems[2])
     call add(result.v, a:elems[2][0])
   endif
+  let result.ignore_case = s:ignore_case
+  let result.ignore_composing = s:ignore_composing
   call s:Debug(result)
   return result
 endfunction "vimregextools#parser#regexp
@@ -74,28 +97,18 @@ endfunction "vimregextools#parser#regexp
 "pattern() {{{1
 function! vimregextools#parse#pattern(elems) abort
   " pattern ::= branch ( or branch ) * -> #pattern
-  "['a', []]
-  "['a', [['|', 'b']]]
-  "['a', [['|', 'b'], ['|', 'c']]]
-  "['a', [['|', 'b'], ['|', 'c'], ['|', 'd']]]
-  call s:Debug(a:elems, 2)
   call s:Debug(a:elems, 2)
   if empty(a:elems[1])
-    "['a', []]
+    " Only one element.
     let result = a:elems[0]
   else
-    "'[^|]' ( '|' '[^|]' ) *
-    "['a', [['|', 'b']]]
-    "['a', [['|', 'b'], ['|', 'c']]]
-    "['a', [['|', 'b'], ['|', 'c'], ['|', 'd']]]
-    let list = a:elems[0]
+    let list = type(a:elems[0]) == type([]) && len(a:elems[0]) == 1
+          \ ? a:elems[0] : [a:elems[0]]
     for i in a:elems[1]
-      echo i
       if type(i[1]) == type([]) && len(i[1]) == 1
-        echo 'extend'
+        " A list with a single item.
         call extend(list, i[1])
       else
-        echo 'add'
         call add(list, i[1])
       endif
     endfor
@@ -172,6 +185,12 @@ function! vimregextools#parse#concat(elems) abort
     endif
     unlet i
   endfor
+  if index(result, '\_$') != -1
+    let s:maxfuncdepth = &mfd
+    set mfd=10000
+    call map(result, 's:walk(v:val, "s:fix_eol")')
+    let &mfd = s:maxfuncdepth
+  endif
   call s:Debug(result)
   return result
 endfunction "vimregextools#parser#concat
@@ -191,9 +210,9 @@ function! vimregextools#parse#piece(elems) abort
     let mediator = {'o': a:elems[1][0], 'v': [a:elems[0]]}
   endif
   " Add flags if any.
-  if !empty(a:elems[2]) && type(mediator) == type({})
+  if !empty(a:elems[2]) && !empty(a:elems[2][0]) && type(mediator) == type({})
     let result = [mediator, a:elems[2]]
-  elseif !empty(a:elems[2])
+  elseif !empty(a:elems[2]) && !empty(a:elems[2][0])
     let result = extend(mediator, a:elems[2])
   else
     let result = mediator
@@ -215,11 +234,31 @@ function! vimregextools#parse#atom(elems) abort
   return result
 endfunction "vimregextools#parser#atom
 
+"flag() {{{1
+function! vimregextools#parse#flag(elems) abort
+  " flag    ::= case_flag | magic_flag | ignore_comb_chars -> #flag
+  call s:Debug(a:elems, 2)
+  if a:elems ==# '\C'
+    let s:ignore_case = 0
+    let result = []
+  elseif a:elems ==# '\c'
+    let s:ignore_case = 1
+    let result = []
+  elseif a:elems ==# '\Z'
+    let s:ignore_composing = 1
+    let result = []
+  else
+    let result = a:elems
+  endif
+  call s:Debug(result)
+  return result
+endfunction "vimregextools#parser#flag
+
 "capture_group() {{{1
 function! vimregextools#parse#capture_group(elems) abort
   " capture_group ::= open_capture_group pattern close_group -> #capture_group
   call s:Debug(a:elems, 2)
-  let result = {'o': a:elems[0], 'v': get(get(a:elems, 1, []), 0, [])}
+  let result = {'o': a:elems[0], 'v': [get(get(a:elems, 1, []), 0, [])]}
   call s:Debug(result)
   return result
 endfunction "vimregextools#parser#capture_group
@@ -494,8 +533,11 @@ endfunction "vimregextools#parser#coll_char
 
 "sequence() {{{1
 function! vimregextools#parse#sequence(elems) abort
-  " sequence ::= start_sequence ']' ? ( collection | seq_char ) * end_sequence -> #sequence
-  let result = a:elems
+  " sequence ::= start_sequence ( collection | seq_char ) + end_sequence -> #sequence
+  call s:Debug(a:elems, 2)
+  let list = a:elems[1]
+  call map(list, 'type(v:val) == type([]) ? v:val[1] : v:val')
+  let result = {'o': a:elems[0], 'v': list}
   call s:Debug(result)
   return result
 endfunction "vimregextools#parser#sequence

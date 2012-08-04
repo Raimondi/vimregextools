@@ -18,7 +18,7 @@ and     ::= '\\&'                                                               
 concat  ::= piece +                                                              -> #concat
 piece   ::= atom multi ? flag *                                                  -> #piece
 atom    ::= flag * ( non_capture_group | capture_group | ordinary_atom )         -> #atom
-flag    ::= case_flag | magic_flag | ignore_comb_chars
+flag    ::= case_flag | magic_flag | ignore_comb_chars -> #flag
 ; Flags {{{2
 legal_flag              ::= case_flag | ignore_comb_chars
 ignore_comb_chars       ::= '\\Z'
@@ -187,7 +187,8 @@ non_uppercase              ::= '\\U'
 nl_or_non_uppercase        ::= '\\_U'
 ; Char items {{{3
 char         ::= escaped_char | '[^\\[.]'
-escaped_char ::= esc | tab | cr | bs | lb | period | '\\' '[^+=?&|@%{}()]' -> #escaped_char
+escaped_char ::= esc | tab | cr | bs | lb | tilde | period | '\\' '[^+=?&|@%{}()]' -> #escaped_char
+tilde        ::= '\\\~'
 period       ::= '\\\.'
 esc          ::= '\\e'
 tab          ::= '\\t'
