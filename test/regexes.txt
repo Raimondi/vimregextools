@@ -25,7 +25,6 @@
 \l '''\l => lowercase.''' 1
 \z '''z => literal character.''' 1
 \p '''\p => printable (:help ''''isprint'''').''' 1
-\l '''\l => lowercase.''' 1
 \ñ '''ñ => literal character.''' 1
 \ö '''ö => literal character.''' 1
 \\ '''\ => literal character.''' 1
