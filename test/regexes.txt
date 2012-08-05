@@ -2,424 +2,426 @@
 # Format is as follows:
 # start of line + regular expression + space + output of string(string(result)) + space + valid (1/0) + end of line
 # Linebreak
-\n '''<NL> => literal character.''' 1
-\\n '''\n => literal characters.''' 1
+\n '{''case'': 0, ''v'': [''\n''], ''comp'': 0, ''o'': ''re''}' 1
+\\n '{''case'': 0, ''v'': [''\'', ''n''], ''comp'': 0, ''o'': ''re''}' 1
 # Backspace
-\b '''<BS> => literal character.''' 1
-\\b '''\b => literal characters.''' 1
+\b '{''case'': 0, ''v'': [''\b''], ''comp'': 0, ''o'': ''re''}' 1
+\\b '{''case'': 0, ''v'': [''\'', ''b''], ''comp'': 0, ''o'': ''re''}' 1
 # CR
-\r '''<CR> => literal character.''' 1
-\\r '''\r => literal characters.''' 1
+\r '{''case'': 0, ''v'': [''\r''], ''comp'': 0, ''o'': ''re''}' 1
+\\r '{''case'': 0, ''v'': [''\'', ''r''], ''comp'': 0, ''o'': ''re''}' 1
 # Tab
-\t '''<Tab> => literal character.''' 1
-\\t '''\t => literal characters.''' 1
+\t '{''case'': 0, ''v'': [''\t''], ''comp'': 0, ''o'': ''re''}' 1
+\\t '{''case'': 0, ''v'': [''\'', ''t''], ''comp'': 0, ''o'': ''re''}' 1
 # Esc
-\e '''<Esc> => literal character.''' 1
-\\e '''\e => literal characters.''' 1
+\e '{''case'': 0, ''v'': [''\e''], ''comp'': 0, ''o'': ''re''}' 1
+\\e '{''case'': 0, ''v'': [''\'', ''e''], ''comp'': 0, ''o'': ''re''}' 1
 # Escaped characters
-\a '''\a => alphabetic.''' 1
-\g '''g => literal character.''' 1
-\j '''j => literal character.''' 1
-\t '''<Tab> => literal character.''' 1
-\q '''q => literal character.''' 1
-\l '''\l => lowercase.''' 1
-\z '''z => literal character.''' 1
-\p '''\p => printable (:help ''''isprint'''').''' 1
-\ñ '''ñ => literal character.''' 1
-\ö '''ö => literal character.''' 1
-\\ '''\ => literal character.''' 1
+\a '{''case'': 0, ''v'': [''\a''], ''comp'': 0, ''o'': ''re''}' 1
+\g '{''case'': 0, ''v'': [''g''], ''comp'': 0, ''o'': ''re''}' 1
+\j '{''case'': 0, ''v'': [''j''], ''comp'': 0, ''o'': ''re''}' 1
+\t '{''case'': 0, ''v'': [''\t''], ''comp'': 0, ''o'': ''re''}' 1
+\q '{''case'': 0, ''v'': [''q''], ''comp'': 0, ''o'': ''re''}' 1
+\l '{''case'': 0, ''v'': [''\l''], ''comp'': 0, ''o'': ''re''}' 1
+\z '{''case'': 0, ''v'': [''z''], ''comp'': 0, ''o'': ''re''}' 1
+\p '{''case'': 0, ''v'': [''\p''], ''comp'': 0, ''o'': ''re''}' 1
+\ñ '{''case'': 0, ''v'': [''ñ''], ''comp'': 0, ''o'': ''re''}' 1
+\ö '{''case'': 0, ''v'': [''ö''], ''comp'': 0, ''o'': ''re''}' 1
+\\ '{''case'': 0, ''v'': [''\''], ''comp'': 0, ''o'': ''re''}' 1
 \( '[]' 0
 \? '[]' 0
-\.\ '[''. => literal character.'', ''\'']' 1
-\ '''\''' 1
-\  '''<Space> => literal character.''' 1
-\. '''. => literal character.''' 1
-\< '''\< => start of a word.''' 1
-\7 '''\7 => back-reference to captured group 7.''' 1
-b\a '[''b => literal character.'', ''\a => alphabetic.'']' 1
-j\q '''jq => literal characters.''' 1
+\.\ '{''case'': 0, ''v'': [''\.'', ''\''], ''comp'': 0, ''o'': ''re''}' 1
+\ '{''case'': 0, ''v'': [''\''], ''comp'': 0, ''o'': ''re''}' 1
+\  '{''case'': 0, ''v'': ['' ''], ''comp'': 0, ''o'': ''re''}' 1
+\. '{''case'': 0, ''v'': [''\.''], ''comp'': 0, ''o'': ''re''}' 1
+\< '{''case'': 0, ''v'': [''\<''], ''comp'': 0, ''o'': ''re''}' 1
+\7 '{''case'': 0, ''v'': [''\7''], ''comp'': 0, ''o'': ''re''}' 1
+b\a '{''case'': 0, ''v'': [''b'', ''\a''], ''comp'': 0, ''o'': ''re''}' 1
+j\q '{''case'': 0, ''v'': [''j'', ''q''], ''comp'': 0, ''o'': ''re''}' 1
 # Characters
-a '''a => literal character.''' 1
-ba '''ba => literal characters.''' 1
-ñ '''ñ => literal character.''' 1
-\cñ '[''\c => ignore case.'', ''ñ => literal character.'']' 1
-ç '''ç => literal character.''' 1
-Ç '''Ç => literal character.''' 1
-abçdef '''abçdef => literal characters.''' 1
-^ ''' => start of line.''' 1
-a^ '''a^ => literal characters.''' 1
-a^b '''a^b => literal characters.''' 1
-a^ '''a^ => literal characters.''' 1
-a\(^b\) '[''a => literal character.'', ''\( => start capture group.'', '' ^b => literal characters.'', ''\) => end capture group.'']' 1
-a\|^b '[''a => literal character.'', ''\| => previous atom and next atom are alternate choices (''''or'''').'', '' ^ => start of line.'', ''  b => literal character.'']' 1
-/ '''/ => literal character.''' 1
-\~ '''~ => literal character.''' 1
-] '[]' 1
+a '{''case'': 0, ''v'': [''a''], ''comp'': 0, ''o'': ''re''}' 1
+ba '{''case'': 0, ''v'': [''b'', ''a''], ''comp'': 0, ''o'': ''re''}' 1
+ñ '{''case'': 0, ''v'': [''ñ''], ''comp'': 0, ''o'': ''re''}' 1
+\cñ '{''case'': 1, ''v'': [''ñ''], ''comp'': 0, ''o'': ''re''}' 1
+ç '{''case'': 0, ''v'': [''ç''], ''comp'': 0, ''o'': ''re''}' 1
+Ç '{''case'': 0, ''v'': [''Ç''], ''comp'': 0, ''o'': ''re''}' 1
+abçdef '{''case'': 0, ''v'': [''a'', ''b'', ''ç'', ''d'', ''e'', ''f''], ''comp'': 0, ''o'': ''re''}' 1
+^ '{''case'': 0, ''v'': [''\_^''], ''comp'': 0, ''o'': ''re''}' 1
+a^ '{''case'': 0, ''v'': [''a'', ''\^''], ''comp'': 0, ''o'': ''re''}' 1
+a^b '{''case'': 0, ''v'': [''a'', ''\^'', ''b''], ''comp'': 0, ''o'': ''re''}' 1
+a^ '{''case'': 0, ''v'': [''a'', ''\^''], ''comp'': 0, ''o'': ''re''}' 1
+a\(^b\) '{''case'': 0, ''v'': [''a'', {''v'': [''\^'', ''b''], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
+a\|^b '{''case'': 0, ''v'': [{''v'': [''a'', [''\_^'', ''b'']], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
+/ '{''case'': 0, ''v'': [''/''], ''comp'': 0, ''o'': ''re''}' 1
+\~ '{''case'': 0, ''v'': [''\~''], ''comp'': 0, ''o'': ''re''}' 1
+] '{''case'': 0, ''v'': ['']''], ''comp'': 0, ''o'': ''re''}' 1
 # identifier
-\i '''\i => identifier (:help ''''isident'''').''' 1
+\i '{''case'': 0, ''v'': [''\i''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_identifier
-\_i '''\_i => identifier (:help ''''isident'''') or newline.''' 1
+\_i '{''case'': 0, ''v'': [{''v'': [''\i'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # identifier_no_digits
-\I '''\I => identifier non-digit (:help ''''isident'''').''' 1
+\I '{''case'': 0, ''v'': [''\I''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_identifier_no_digits
-\_I '''\_I => identifier non-digit (:help ''''isident'''') or newline.''' 1
+\_I '{''case'': 0, ''v'': [{''v'': [''\I'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # keyword
-\k '''\k => keyword (:help ''''iskeyword'''').''' 1
+\k '{''case'': 0, ''v'': [''\k''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_keyword
-\_k '''\_k => keyword (:help ''''iskeyword'''') or newline.''' 1
+\_k '{''case'': 0, ''v'': [{''v'': [''\k'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # non_keyword
-\K '''\K => non-keyword (:help ''''iskeyword'''').''' 1
+\K '{''case'': 0, ''v'': [''\K''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_non_keyword
-\_K '''\_K => non-keyword (:help ''''iskeyword'''') or newline.''' 1
+\_K '{''case'': 0, ''v'': [{''v'': [''\K'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # file_name
-\f '''\f => file-name (:help ''''isfname'''').''' 1
+\f '{''case'': 0, ''v'': [''\f''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_file_name
-\_f '''\_f => file-name (:help ''''isfname'''') or newline.''' 1
+\_f '{''case'': 0, ''v'': [{''v'': [''\f'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # file_name_no_digits
-\F '''\F => file-name non-digit.''' 1
+\F '{''case'': 0, ''v'': [''\F''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_file_name_no_digits
-\_F '''\_F => file-name no-digit (:help ''''isfname'''') or newline.''' 1
+\_F '{''case'': 0, ''v'': [{''v'': [''\F'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # printable
-\p '''\p => printable (:help ''''isprint'''').''' 1
+\p '{''case'': 0, ''v'': [''\p''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_printable
-\_p '''\_p => printable (:help ''''isprint'''') or newline.''' 1
+\_p '{''case'': 0, ''v'': [{''v'': [''\p'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # printable_no_digits
-\P '''\P => printable non-digit (:help ''''isprint'''').''' 1
+\P '{''case'': 0, ''v'': [''\P''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_printable_no_digits
-\_P '''\_P => printable non-digit (:help ''''isprint'''') or newline.''' 1
+\_P '{''case'': 0, ''v'': [{''v'': [''\P'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # whitespace
-\s '''\s => whitespace.''' 1
+\s '{''case'': 0, ''v'': [''\s''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_whitespace
-\_s '''\_s => whitespace or newline.''' 1
+\_s '{''case'': 0, ''v'': [{''v'': [''\s'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # non_whitespace
-\S '''\S => non-whitespace.''' 1
+\S '{''case'': 0, ''v'': [''\S''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_non_whitespace
-\_S '''\_S => non-whitespace or newline.''' 1
+\_S '{''case'': 0, ''v'': [{''v'': [''\S'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # digit
-\d '''\d => digit [0-9].''' 1
+\d '{''case'': 0, ''v'': [''\d''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_digit
-\_d '''\_d => digit [0-9] or newline.''' 1
+\_d '{''case'': 0, ''v'': [{''v'': [''\d'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # non_digit
-\D '''\D => non-digit [^0-9].''' 1
+\D '{''case'': 0, ''v'': [''\D''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_non_digit
-\_D '''\_D => non-digit [0-9] or newline.''' 1
+\_D '{''case'': 0, ''v'': [{''v'': [''\D'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # hex_digit
-\x '''\x => hex-digit [0-9a-f].''' 1
+\x '{''case'': 0, ''v'': [''\x''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_hex_digit
-\_x '''\_x => hex-digit [0-9a-f] or newline.''' 1
+\_x '{''case'': 0, ''v'': [{''v'': [''\x'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # non_hex_digit
-\X '''\X => non-hex-digit [^0-9a-f].''' 1
+\X '{''case'': 0, ''v'': [''\X''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_non_hex_digit
-\_X '''\_X => non-hex-digit [0-9a-f] or newline.''' 1
+\_X '{''case'': 0, ''v'': [{''v'': [''\X'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # octal_digit
-\o '''\o => octal-digit [0-7].''' 1
+\o '{''case'': 0, ''v'': [''\o''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_octal_digit
-\_o '''\_o => octal-digit ([0-7]) or newline.''' 1
+\_o '{''case'': 0, ''v'': [{''v'': [''\o'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # non_octal_digit
-\O '''\O => non-octal-digit ([^0-7]).''' 1
+\O '{''case'': 0, ''v'': [''\O''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_non_octal_digit
-\_O '''\_O => non-octal-number ([0-7]) or newline.''' 1
+\_O '{''case'': 0, ''v'': [{''v'': [''\O'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # word
-\w '''\w => word ([a-zA-Z0-9_]).''' 1
+\w '{''case'': 0, ''v'': [''\w''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_word
-\_w '''\_w => word ([a-zA-Z0-9_] or newline.''' 1
+\_w '{''case'': 0, ''v'': [{''v'': [''\w'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # non_word
-\W '''\W => non-word ([a-zA-Z0-9_]).''' 1
+\W '{''case'': 0, ''v'': [''\W''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_non_word
-\_W '''\_W => non-word ([^a-zA-Z0-9_]) or newline.''' 1
+\_W '{''case'': 0, ''v'': [{''v'': [''\W'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # head
-\h '''\h => head ([a-zA-Z_]).''' 1
+\h '{''case'': 0, ''v'': [''\h''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_head
-\_h '''\_h => head ([a-zA-Z_]) or newline.''' 1
+\_h '{''case'': 0, ''v'': [{''v'': [''\h'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # non_head
-\H '''\H => non-head ([^a-zA-Z_]).''' 1
+\H '{''case'': 0, ''v'': [''\H''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_non_head
-\_H '''\_H => non-head (alpha or _) or newline.''' 1
+\_H '{''case'': 0, ''v'': [{''v'': [''\H'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # alpha
-\a '''\a => alphabetic.''' 1
+\a '{''case'': 0, ''v'': [''\a''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_alpha
-\_a '''\_a => alphabetic or newline.''' 1
+\_a '{''case'': 0, ''v'': [{''v'': [''\a'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # non_alpha
-\A '''\A => non-alphabetic.''' 1
+\A '{''case'': 0, ''v'': [''\A''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_non_alpha
-\_A '''\_A => non-alphabetic or newline.''' 1
+\_A '{''case'': 0, ''v'': [{''v'': [''\A'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # lowercase
-\l '''\l => lowercase.''' 1
+\l '{''case'': 0, ''v'': [''\l''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_lowercase
-\_l '''\_l => lowercase or newline.''' 1
+\_l '{''case'': 0, ''v'': [{''v'': [''\l'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # non_lowercase
-\L '''\L => non-lowercase.''' 1
+\L '{''case'': 0, ''v'': [''\L''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_non_lowercase
-\_L '''\_L => non-lowercase or newline.''' 1
+\_L '{''case'': 0, ''v'': [{''v'': [''\L'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # uppercase
-\u '''\u => uppercase.''' 1
+\u '{''case'': 0, ''v'': [''\u''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_uppercase
-\_u '''\_u => uppercase or newline.''' 1
+\_u '{''case'': 0, ''v'': [{''v'': [''\u'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # non_uppercase
-\U '''\U => non-uppercase.''' 1
+\U '{''case'': 0, ''v'': [''\U''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_non_uppercase
-\_U '''\_U => non-uppercase or newline.''' 1
+\_U '{''case'': 0, ''v'': [{''v'': [''\U'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # Collection
 [ '[]' 0
 [] '[]' 0
-[]] '[''[ => start collection.'', '']'', ''] => end collection.'']' 1
-[x]] '[]' 1
+[]] '{''case'': 0, ''v'': [{''v'': [''\]''], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
+[x]] '{''case'': 0, ''v'': [{''v'': [''x''], ''negate'': 0, ''o'': ''[''}, '']''], ''comp'': 0, ''o'': ''re''}' 1
 [x\] '[]' 0
 # decimal_char
-[\d2] '[''[ => start collection.'', ''  \d2 => decimal number of character.'', ''] => end collection.'']' 1
-[\d20] '[''[ => start collection.'', ''  \d20 => decimal number of character.'', ''] => end collection.'']' 1
-[\d02] '[''[ => start collection.'', ''  \d02 => decimal number of character.'', ''] => end collection.'']' 1
-[\d12342] '[''[ => start collection.'', ''  \d12342 => decimal number of character.'', ''] => end collection.'']' 1
-[\d1234298] '[''[ => start collection.'', ''  \d1234298 => decimal number of character.'', ''] => end collection.'']' 1
+[\d2] '{''case'': 0, ''v'': [{''v'': [{''v'': [''2''], ''o'': ''[\d''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
+[\d20] '{''case'': 0, ''v'': [{''v'': [{''v'': [''20''], ''o'': ''[\d''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
+[\d02] '{''case'': 0, ''v'': [{''v'': [{''v'': [''02''], ''o'': ''[\d''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
+[\d12342] '{''case'': 0, ''v'': [{''v'': [{''v'': [''12342''], ''o'': ''[\d''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
+[\d1234298] '{''case'': 0, ''v'': [{''v'': [{''v'': [''1234298''], ''o'': ''[\d''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # octal_char
-[\o10] '[''[ => start collection.'', ''  \o10 => octal number of character up to 0377.'', ''] => end collection.'']' 1
-[\o0023] '[''[ => start collection.'', ''  \o0023 => octal number of character up to 0377.'', ''] => end collection.'']' 1
-[\o89] '[''[ => start collection.'', ''  \o89 => literal character(s).'', ''] => end collection.'']' 1
-[\o0001] '[''[ => start collection.'', ''  \o0001 => octal number of character up to 0377.'', ''] => end collection.'']' 1
-[\o00001] '[''[ => start collection.'', ''  \o0000 => octal number of character up to 0377.'', ''  1 => literal character(s).'', ''] => end collection.'']' 1
+[\o10] '{''case'': 0, ''v'': [{''v'': [{''v'': [''10''], ''o'': ''[\o''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
+[\o0023] '{''case'': 0, ''v'': [{''v'': [{''v'': [''0023''], ''o'': ''[\o''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
+[\o89] '{''case'': 0, ''v'': [{''v'': [''\'', ''o'', ''8'', ''9''], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
+[\o0001] '{''case'': 0, ''v'': [{''v'': [{''v'': [''0001''], ''o'': ''[\o''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
+[\o00001] '{''case'': 0, ''v'': [{''v'': [{''v'': [''0000''], ''o'': ''[\o''}, ''1''], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # hex_char_low
-[\x0a] '[''[ => start collection.'', ''  \x0a => hexadecimal number of multibyte character up to 0xff.'', ''] => end collection.'']' 1
-[\xba] '[''[ => start collection.'', ''  \xba => hexadecimal number of multibyte character up to 0xff.'', ''] => end collection.'']' 1
-[\xnba] '[''[ => start collection.'', ''  \xnba => literal character(s).'', ''] => end collection.'']' 1
+[\x0a] '{''case'': 0, ''v'': [{''v'': [{''v'': [''0a''], ''o'': ''[\x''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
+[\xba] '{''case'': 0, ''v'': [{''v'': [{''v'': [''ba''], ''o'': ''[\x''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
+[\xnba] '{''case'': 0, ''v'': [{''v'': [''\'', ''x'', ''n'', ''b'', ''a''], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # hex_char_medium
-[\u1] '[''[ => start collection.'', ''  \u1 => hexadecimal number of multibyte character up to 0xffff.'', ''] => end collection.'']' 1
-[\u15] '[''[ => start collection.'', ''  \u15 => hexadecimal number of multibyte character up to 0xffff.'', ''] => end collection.'']' 1
-[\uf15] '[''[ => start collection.'', ''  \uf15 => hexadecimal number of multibyte character up to 0xffff.'', ''] => end collection.'']' 1
-[\ufb15] '[''[ => start collection.'', ''  \ufb15 => hexadecimal number of multibyte character up to 0xffff.'', ''] => end collection.'']' 1
+[\u1] '{''case'': 0, ''v'': [{''v'': [{''v'': [''1''], ''o'': ''[\u''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
+[\u15] '{''case'': 0, ''v'': [{''v'': [{''v'': [''15''], ''o'': ''[\u''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
+[\uf15] '{''case'': 0, ''v'': [{''v'': [{''v'': [''f15''], ''o'': ''[\u''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
+[\ufb15] '{''case'': 0, ''v'': [{''v'': [{''v'': [''fb15''], ''o'': ''[\u''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # hex_char_high
-[\U1] '[''[ => start collection.'', ''  \U1 => hexadecimal number of multibyte character up to 0xffffffff.'', ''] => end collection.'']' 1
-[\U1f] '[''[ => start collection.'', ''  \U1f => hexadecimal number of multibyte character up to 0xffffffff.'', ''] => end collection.'']' 1
-[\U1fb] '[''[ => start collection.'', ''  \U1fb => hexadecimal number of multibyte character up to 0xffffffff.'', ''] => end collection.'']' 1
-[\U1fb3] '[''[ => start collection.'', ''  \U1fb3 => hexadecimal number of multibyte character up to 0xffffffff.'', ''] => end collection.'']' 1
-[\U1fb3c] '[''[ => start collection.'', ''  \U1fb3c => hexadecimal number of multibyte character up to 0xffffffff.'', ''] => end collection.'']' 1
-[\U1fb3c30] '[''[ => start collection.'', ''  \U1fb3c30 => hexadecimal number of multibyte character up to 0xffffffff.'', ''] => end collection.'']' 1
-[\U1fb3c30a] '[''[ => start collection.'', ''  \U1fb3c30a => hexadecimal number of multibyte character up to 0xffffffff.'', ''] => end collection.'']' 1
+[\U1] '{''case'': 0, ''v'': [{''v'': [{''v'': [''1''], ''o'': ''[\U''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
+[\U1f] '{''case'': 0, ''v'': [{''v'': [{''v'': [''1f''], ''o'': ''[\U''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
+[\U1fb] '{''case'': 0, ''v'': [{''v'': [{''v'': [''1fb''], ''o'': ''[\U''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
+[\U1fb3] '{''case'': 0, ''v'': [{''v'': [{''v'': [''1fb3''], ''o'': ''[\U''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
+[\U1fb3c] '{''case'': 0, ''v'': [{''v'': [{''v'': [''1fb3c''], ''o'': ''[\U''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
+[\U1fb3c30] '{''case'': 0, ''v'': [{''v'': [{''v'': [''1fb3c30''], ''o'': ''[\U''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
+[\U1fb3c30a] '{''case'': 0, ''v'': [{''v'': [{''v'': [''1fb3c30a''], ''o'': ''[\U''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # bc_alpha
-[[:alpha:]] '[''[ => start collection.'', ''  [:alpha:] => letters.'', ''] => end collection.'']' 1
+[[:alpha:]] '{''case'': 0, ''v'': [{''v'': [{''v'': [''alpha''], ''o'': ''[:''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # bc_alnum
-[[:alnum:]] '[''[ => start collection.'', ''  [:alnum:] => letters and digits.'', ''] => end collection.'']' 1
+[[:alnum:]] '{''case'': 0, ''v'': [{''v'': [{''v'': [''alnum''], ''o'': ''[:''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # bc_blank
-[[:blank:]] '[''[ => start collection.'', ''  [:blank:] => space and tab characters.'', ''] => end collection.'']' 1
+[[:blank:]] '{''case'': 0, ''v'': [{''v'': [{''v'': [''blank''], ''o'': ''[:''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # bc_cntrl
-[[:cntrl:]] '[''[ => start collection.'', ''  [:cntrl:] => control character.'', ''] => end collection.'']' 1
+[[:cntrl:]] '{''case'': 0, ''v'': [{''v'': [{''v'': [''cntrl''], ''o'': ''[:''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # bc_digit
-[[:digit:]] '[''[ => start collection.'', ''  [:digit:] => decimal digit.'', ''] => end collection.'']' 1
+[[:digit:]] '{''case'': 0, ''v'': [{''v'': [{''v'': [''digit''], ''o'': ''[:''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # bc_graph
-[[:graph:]] '[''[ => start collection.'', ''  [:graph:] => printable character including space.'', ''] => end collection.'']' 1
+[[:graph:]] '{''case'': 0, ''v'': [{''v'': [{''v'': [''graph''], ''o'': ''[:''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # bc_lower
-[[:lower:]] '[''[ => start collection.'', ''  [:lower:] => loercase letters (all letters when ''''ignorecase'''' is used).'', ''] => end collection.'']' 1
+[[:lower:]] '{''case'': 0, ''v'': [{''v'': [{''v'': [''lower''], ''o'': ''[:''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # bc_print
-[[:print:]] '[''[ => start collection.'', ''  [:print:] => printable character including space.'', ''] => end collection.'']' 1
+[[:print:]] '{''case'': 0, ''v'': [{''v'': [{''v'': [''print''], ''o'': ''[:''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # bc_punct
-[[:punct:]] '[''[ => start collection.'', ''  [:punct:] => punctuation.'', ''] => end collection.'']' 1
+[[:punct:]] '{''case'': 0, ''v'': [{''v'': [{''v'': [''punct''], ''o'': ''[:''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # bc_space
-[[:space:]] '[''[ => start collection.'', ''  [:space:] => space.'', ''] => end collection.'']' 1
+[[:space:]] '{''case'': 0, ''v'': [{''v'': [{''v'': [''space''], ''o'': ''[:''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # bc_upper
-[[:upper:]] '[''[ => start collection.'', ''  [:upper:] => uppercase letters (all letters when ''''ignorecase'''' is used).'', ''] => end collection.'']' 1
+[[:upper:]] '{''case'': 0, ''v'': [{''v'': [{''v'': [''upper''], ''o'': ''[:''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # bc_xdigit
-[[:xdigit:]] '[''[ => start collection.'', ''  [:xdigit:] => hexadecimal digits.'', ''] => end collection.'']' 1
+[[:xdigit:]] '{''case'': 0, ''v'': [{''v'': [{''v'': [''xdigit''], ''o'': ''[:''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # bc_return
-[[:return:]] '[''[ => start collection.'', ''  [:return:] => return character.'', ''] => end collection.'']' 1
+[[:return:]] '{''case'': 0, ''v'': [{''v'': [{''v'': [''return''], ''o'': ''[:''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # bc_tab
-[[:tab:]] '[''[ => start collection.'', ''  [:tab:] => tab character.'', ''] => end collection.'']' 1
+[[:tab:]] '{''case'': 0, ''v'': [{''v'': [{''v'': [''tab''], ''o'': ''[:''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # bc_escape
-[[:escape:]] '[''[ => start collection.'', ''  [:escape:] => escape character.'', ''] => end collection.'']' 1
+[[:escape:]] '{''case'': 0, ''v'': [{''v'': [{''v'': [''escape''], ''o'': ''[:''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # bc_backspace
-[[:backspace:]] '[''[ => start collection.'', ''  [:backspace:] => backspace character.'', ''] => end collection.'']' 1
+[[:backspace:]] '{''case'': 0, ''v'': [{''v'': [{''v'': [''backspace''], ''o'': ''[:''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # equivalence
-[[=x=]] '[''[ => start collection.'', ''  [=x=] => equivalence class.'', ''] => end collection.'']' 1
+[[=x=]] '{''case'': 0, ''v'': [{''v'': [{''v'': [''x''], ''o'': ''[=''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # collation
-[[.x.]] '[''[ => start collection.'', ''  [.x.] => collation element.'', ''] => end collection.'']' 1
+[[.x.]] '{''case'': 0, ''v'': [{''v'': [{''v'': [''x''], ''o'': ''[.''}], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
 # back_reference
-\1 '''\1 => back-reference to captured group 1.''' 1
-\2 '''\2 => back-reference to captured group 2.''' 1
-\3 '''\3 => back-reference to captured group 3.''' 1
-\4 '''\4 => back-reference to captured group 4.''' 1
-\5 '''\5 => back-reference to captured group 5.''' 1
-\6 '''\6 => back-reference to captured group 6.''' 1
-\7 '''\7 => back-reference to captured group 7.''' 1
-\8 '''\8 => back-reference to captured group 8.''' 1
-\9 '''\9 => back-reference to captured group 9.''' 1
+\1 '{''case'': 0, ''v'': [''\1''], ''comp'': 0, ''o'': ''re''}' 1
+\2 '{''case'': 0, ''v'': [''\2''], ''comp'': 0, ''o'': ''re''}' 1
+\3 '{''case'': 0, ''v'': [''\3''], ''comp'': 0, ''o'': ''re''}' 1
+\4 '{''case'': 0, ''v'': [''\4''], ''comp'': 0, ''o'': ''re''}' 1
+\5 '{''case'': 0, ''v'': [''\5''], ''comp'': 0, ''o'': ''re''}' 1
+\6 '{''case'': 0, ''v'': [''\6''], ''comp'': 0, ''o'': ''re''}' 1
+\7 '{''case'': 0, ''v'': [''\7''], ''comp'': 0, ''o'': ''re''}' 1
+\8 '{''case'': 0, ''v'': [''\8''], ''comp'': 0, ''o'': ''re''}' 1
+\9 '{''case'': 0, ''v'': [''\9''], ''comp'': 0, ''o'': ''re''}' 1
 # Sequence
 \%[ '[]' 0
 \%[] '[]' 0
-\%[x] '[''  \%[ => start of optional sequence.'', ''x'', ''] => end of optional sequence.'']' 1
-a\%[bc] '[''a => literal character.'', ''  \%[ => start of optional sequence.'', ''b'', ''c'', ''] => end of optional sequence.'']' 1
-\%[[x]] '[''  \%[ => start of optional sequence.'', ''  [ => start collection.'', ''  x => literal character(s).'', ''] => end collection.'', ''] => end of optional sequence.'']' 1
+\%[x] '{''case'': 0, ''v'': [{''v'': [''x''], ''o'': ''\%[''}], ''comp'': 0, ''o'': ''re''}' 1
+a\%[bc] '{''case'': 0, ''v'': [''a'', {''v'': [''b'', ''c''], ''o'': ''\%[''}], ''comp'': 0, ''o'': ''re''}' 1
+\%[[x]] '{''case'': 0, ''v'': [{''v'': [{''v'': [''x''], ''negate'': 0, ''o'': ''[''}], ''o'': ''\%[''}], ''comp'': 0, ''o'': ''re''}' 1
 \%[]x] '[]' 0
-\%[x]] '[]' 1
-\%[a]] '[]' 1
+\%[x]] '{''case'': 0, ''v'': [{''v'': [''x''], ''o'': ''\%[''}, '']''], ''comp'': 0, ''o'': ''re''}' 1
+\%[a]] '{''case'': 0, ''v'': [{''v'': [''a''], ''o'': ''\%[''}, '']''], ''comp'': 0, ''o'': ''re''}' 1
 # bol
-^ ''' => start of line.''' 1
+^ '{''case'': 0, ''v'': [''\_^''], ''comp'': 0, ''o'': ''re''}' 1
 # bol_any
-\_^ '''\_^ => start of line, anywhere in the pattern.''' 1
+\_^ '{''case'': 0, ''v'': [''\_^''], ''comp'': 0, ''o'': ''re''}' 1
+^\(^$x\(^a^$\|^b\)\|^c\)\|^d '{''case'': 0, ''v'': [{''v'': [[''\_^'', {''v'': [{''v'': [[''\^'', ''\$'', ''x'', {''v'': [{''v'': [[''\^'', ''a'', ''\^'', ''\_$''], [''\^'', ''b'']], ''o'': ''\|''}], ''o'': ''\(''}], [''\^'', ''c'']], ''o'': ''\|''}], ''o'': ''\(''}], [''\_^'', ''d'']], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # eol
-$ ''' => end of line.''' 1
+$ '{''case'': 0, ''v'': [''\_$''], ''comp'': 0, ''o'': ''re''}' 1
 # eol_any
-\_$ '''\_$ => end of line, anywhere in the pattern.''' 1
+\_$ '{''case'': 0, ''v'': [''\_$''], ''comp'': 0, ''o'': ''re''}' 1
+\($\(a$\|b$c$\)$\|d$$\)$\|efg$ '{''case'': 0, ''v'': [{''v'': [[{''v'': [{''v'': [[''\$'', {''v'': [{''v'': [[''a'', ''\$''], [''b'', ''\$'', ''c'', ''\$'']], ''o'': ''\|''}], ''o'': ''\(''}, ''\$''], [''d'', ''\$'', ''\$'']], ''o'': ''\|''}], ''o'': ''\(''}, ''\_$''], [''e'', ''f'', ''g'', ''\_$'']], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # bow
-\< '''\< => start of a word.''' 1
+\< '{''case'': 0, ''v'': [''\<''], ''comp'': 0, ''o'': ''re''}' 1
 # eow
-\> '''\> => end of a word.''' 1
+\> '{''case'': 0, ''v'': [''\>''], ''comp'': 0, ''o'': ''re''}' 1
 # zs
-\zs '''\zs => start of match.''' 1
+\zs '{''case'': 0, ''v'': [''\zs''], ''comp'': 0, ''o'': ''re''}' 1
 # ze
-\ze '''\ze => end of match.''' 1
+\ze '{''case'': 0, ''v'': [''\ze''], ''comp'': 0, ''o'': ''re''}' 1
 # bof
-\%$ '''\%$ => end of filen''' 1
+\%$ '{''case'': 0, ''v'': [''\%$''], ''comp'': 0, ''o'': ''re''}' 1
 # eof
-\%^ '''\%^ => start of file.''' 1
+\%^ '{''case'': 0, ''v'': [''\%^''], ''comp'': 0, ''o'': ''re''}' 1
 # visual
-\%V '''\%V => inside the Visual area.''' 1
+\%V '{''case'': 0, ''v'': [''\%V''], ''comp'': 0, ''o'': ''re''}' 1
 # cursor
-\%# '''\%# => current cursor position.''' 1
+\%# '{''case'': 0, ''v'': [''\%#''], ''comp'': 0, ''o'': ''re''}' 1
 # mark
-\%'1 '''\%''''1 => mark 1.''' 1
-\%'5 '''\%''''5 => mark 5.''' 1
-\%'a '''\%''''a => mark a.''' 1
-\%'x '''\%''''x => mark x.''' 1
-\%'< '''\%''''< => mark <.''' 1
-\%'> '''\%''''> => mark >.''' 1
-\%'' '''\%'''''''' => mark ''''.''' 1
-\%'[ '''\%''''[ => mark [.''' 1
-\%'] '''\%''''] => mark ].''' 1
-\%'" '''\%''''" => mark ".''' 1
-\%'^ '''\%''''^ => mark ^.''' 1
-\%'. '''\%''''. => mark ..''' 1
-\%'( '''\%''''( => mark (.''' 1
-\%') '''\%'''') => mark ).''' 1
-\%'{ '''\%''''{ => mark {.''' 1
-\%'} '''\%''''} => mark }.''' 1
+\%'1 '{''case'': 0, ''v'': [{''v'': [''1''], ''o'': ''\%''''''}], ''comp'': 0, ''o'': ''re''}' 1
+\%'5 '{''case'': 0, ''v'': [{''v'': [''5''], ''o'': ''\%''''''}], ''comp'': 0, ''o'': ''re''}' 1
+\%'a '{''case'': 0, ''v'': [{''v'': [''a''], ''o'': ''\%''''''}], ''comp'': 0, ''o'': ''re''}' 1
+\%'x '{''case'': 0, ''v'': [{''v'': [''x''], ''o'': ''\%''''''}], ''comp'': 0, ''o'': ''re''}' 1
+\%'< '{''case'': 0, ''v'': [{''v'': [''<''], ''o'': ''\%''''''}], ''comp'': 0, ''o'': ''re''}' 1
+\%'> '{''case'': 0, ''v'': [{''v'': [''>''], ''o'': ''\%''''''}], ''comp'': 0, ''o'': ''re''}' 1
+\%'' '{''case'': 0, ''v'': [{''v'': [''''''''], ''o'': ''\%''''''}], ''comp'': 0, ''o'': ''re''}' 1
+\%'[ '{''case'': 0, ''v'': [{''v'': [''[''], ''o'': ''\%''''''}], ''comp'': 0, ''o'': ''re''}' 1
+\%'] '{''case'': 0, ''v'': [{''v'': ['']''], ''o'': ''\%''''''}], ''comp'': 0, ''o'': ''re''}' 1
+\%'" '{''case'': 0, ''v'': [{''v'': [''"''], ''o'': ''\%''''''}], ''comp'': 0, ''o'': ''re''}' 1
+\%'^ '{''case'': 0, ''v'': [{''v'': [''^''], ''o'': ''\%''''''}], ''comp'': 0, ''o'': ''re''}' 1
+\%'. '{''case'': 0, ''v'': [{''v'': [''.''], ''o'': ''\%''''''}], ''comp'': 0, ''o'': ''re''}' 1
+\%'( '{''case'': 0, ''v'': [{''v'': [''(''], ''o'': ''\%''''''}], ''comp'': 0, ''o'': ''re''}' 1
+\%') '{''case'': 0, ''v'': [{''v'': ['')''], ''o'': ''\%''''''}], ''comp'': 0, ''o'': ''re''}' 1
+\%'{ '{''case'': 0, ''v'': [{''v'': [''{''], ''o'': ''\%''''''}], ''comp'': 0, ''o'': ''re''}' 1
+\%'} '{''case'': 0, ''v'': [{''v'': [''}''], ''o'': ''\%''''''}], ''comp'': 0, ''o'': ''re''}' 1
 \%'+ '[]' 0
 # line
-\%3l '''\%3l => line 3.''' 1
-\%678l '''\%678l => line 678.''' 1
+\%3l '{''case'': 0, ''v'': [{''v'': [3], ''o'': ''\%l''}], ''comp'': 0, ''o'': ''re''}' 1
+\%678l '{''case'': 0, ''v'': [{''v'': [678], ''o'': ''\%l''}], ''comp'': 0, ''o'': ''re''}' 1
 # column
-\%1234c '''\%1234c => column 1234.''' 1
+\%1234c '{''case'': 0, ''v'': [{''v'': [1234], ''o'': ''\%c''}], ''comp'': 0, ''o'': ''re''}' 1
 # virtual_column
-\%1234v '''\%1234v => virtual column 1234.''' 1
+\%1234v '{''case'': 0, ''v'': [{''v'': [1234], ''o'': ''\%v''}], ''comp'': 0, ''o'': ''re''}' 1
 # dot
-. '''. => any single character.''' 1
+. '{''case'': 0, ''v'': [''.''], ''comp'': 0, ''o'': ''re''}' 1
 # nl_or_dot
-\_. '''\_. => any single character or end of line.''' 1
+\_. '{''case'': 0, ''v'': [{''v'': [''.'', ''\n''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 # at_ahead
 \@= '[]' 0
-x\@= '[''x => literal character.'', ''\@= => positive lookahead: previous atom present ? match : no match. of the previous atom.'']' 1
+x\@= '{''case'': 0, ''v'': [{''v'': [''x''], ''o'': ''\@=''}], ''comp'': 0, ''o'': ''re''}' 1
 # at_no_ahead
 \@! '[]' 0
-x\@! '[''x => literal character.'', ''\@! => negative lookahead: previous atom present ? no match : match. of the previous atom.'']' 1
+x\@! '{''case'': 0, ''v'': [{''v'': [''x''], ''o'': ''\@!''}], ''comp'': 0, ''o'': ''re''}' 1
 # at_behind
 \@<= '[]' 0
-x\@<= '[''x => literal character.'', ''\@<= => positive lookbehind: previous atom present ? match : no match. of the previous atom.'']' 1
+x\@<= '{''case'': 0, ''v'': [{''v'': [''x''], ''o'': ''\@<=''}], ''comp'': 0, ''o'': ''re''}' 1
 # at_no_behind
 \@<! '[]' 0
-x\@<! '[''x => literal character.'', ''\@<! => negative lookbehind: previous atom present ? no match : match. of the previous atom.'']' 1
+x\@<! '{''case'': 0, ''v'': [{''v'': [''x''], ''o'': ''\@<!''}], ''comp'': 0, ''o'': ''re''}' 1
 # at_whole
 \@> '[]' 0
-x\@> '[''x => literal character.'', ''\@> => match the preceding atom like matching a whole pattern. of the previous atom.'']' 1
+x\@> '{''case'': 0, ''v'': [{''v'': [''x''], ''o'': ''\@>''}], ''comp'': 0, ''o'': ''re''}' 1
 # star
-* '[]' 1
-x* '[''x => literal character.'', ''* => zero or more of the previous atom.'']' 1
+* '{''case'': 0, ''v'': [''*''], ''comp'': 0, ''o'': ''re''}' 1
+x* '{''case'': 0, ''v'': [{''v'': [''x''], ''o'': ''*''}], ''comp'': 0, ''o'': ''re''}' 1
 # plus
 \+ '[]' 0
-x\+ '[''x => literal character.'', ''\+ => one or more of the previous atom.'']' 1
+x\+ '{''case'': 0, ''v'': [{''v'': [''x''], ''o'': ''\+''}], ''comp'': 0, ''o'': ''re''}' 1
 # equal
 \= '[]' 0
-x\= '[''x => literal character.'', ''\= => zero or one of the previous atom.'']' 1
+x\= '{''case'': 0, ''v'': [{''v'': [''x''], ''o'': ''\=''}], ''comp'': 0, ''o'': ''re''}' 1
 # question
 \? '[]' 0
-x\? '[''x => literal character.'', ''\? => zero or one of the previous atom.'']' 1
+x\? '{''case'': 0, ''v'': [{''v'': [''x''], ''o'': ''\?''}], ''comp'': 0, ''o'': ''re''}' 1
 # Group
 \( '[]' 0
 \) '[]' 0
-\(\) '[''\( => start capture group.'', ''\) => end capture group.'']' 1
-\(x\) '[''\( => start capture group.'', ''  x => literal character.'', ''\) => end capture group.'']' 1
+\(\) '{''case'': 0, ''v'': [{''v'': [], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
+\(x\) '{''case'': 0, ''v'': [{''v'': [''x''], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
 \() '[]' 0
 \(\(b\)\ '[]' 0
-\(\(b\)\) '[''\( => start capture group.'', ''  \( => start capture group.'', ''  b => literal character.'', ''\) => end capture group.'', ''\) => end capture group.'']' 1
+\(\(b\)\) '{''case'': 0, ''v'': [{''v'': [{''v'': [''b''], ''o'': ''\(''}], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
 \%( '[]' 0
 \) '[]' 0
-\%(\) '[''\%( => start non-capture group.'', ''\) => end non-capture group.'']' 1
-\%(x\) '[''\%( => start non-capture group.'', ''  x => literal character.'', ''\) => end non-capture group.'']' 1
+\%(\) '{''case'': 0, ''v'': [], ''comp'': 0, ''o'': ''re''}' 1
+\%(x\) '{''case'': 0, ''v'': [''x''], ''comp'': 0, ''o'': ''re''}' 1
 \%() '[]' 0
 \%(\%(b\)\ '[]' 0
-\%(\%(b\)\) '[''\%( => start non-capture group.'', ''  \%( => start non-capture group.'', ''  b => literal character.'', ''\) => end non-capture group.'', ''\) => end non-capture group.'']' 1
+\%(\%(b\)\) '{''case'': 0, ''v'': [''b''], ''comp'': 0, ''o'': ''re''}' 1
 # ignore_comb_chars
-\Z '''\Z => ignore differences in Unicode "combining characters".''' 1
-x\Z '[''x => literal character.'', ''\Z => ignore differences in Unicode "combining characters".'']' 1
-\Zx '[''\Z => ignore differences in Unicode "combining characters".'', ''x => literal character.'']' 1
+\Z '{''case'': 0, ''v'': [], ''comp'': 1, ''o'': ''re''}' 1
+x\Z '{''case'': 0, ''v'': [''x''], ''comp'': 1, ''o'': ''re''}' 1
+\Zx '{''case'': 0, ''v'': [''x''], ''comp'': 1, ''o'': ''re''}' 1
 # ignore_case
-\c '''\c => ignore case.''' 1
-x\c '[''x => literal character.'', ''\c => ignore case.'']' 1
-\cx '[''\c => ignore case.'', ''x => literal character.'']' 1
+\c '{''case'': 1, ''v'': [], ''comp'': 0, ''o'': ''re''}' 1
+x\c '{''case'': 1, ''v'': [''x''], ''comp'': 0, ''o'': ''re''}' 1
+\cx '{''case'': 1, ''v'': [''x''], ''comp'': 0, ''o'': ''re''}' 1
 # match_case
-\C '''\C => match case.''' 1
-x\C '[''x => literal character.'', ''\C => match case.'']' 1
-\Cx '[''\C => match case.'', ''x => literal character.'']' 1
+\C '{''case'': 0, ''v'': [], ''comp'': 0, ''o'': ''re''}' 1
+x\C '{''case'': 0, ''v'': [''x''], ''comp'': 0, ''o'': ''re''}' 1
+\Cx '{''case'': 0, ''v'': [''x''], ''comp'': 0, ''o'': ''re''}' 1
 # magic
 \m '[]' 0
-x\m '[''x => literal character.'', ''\m => magic.'']' 1
-\mx '[''\m => magic.'', ''x => literal character.'']' 1
+x\m '{''case'': 0, ''v'': [''x'', ''\m''], ''comp'': 0, ''o'': ''re''}' 1
+\mx '{''case'': 0, ''v'': [''\m'', ''x''], ''comp'': 0, ''o'': ''re''}' 1
 # no_magic
 \M '[]' 0
-x\M '[''x => literal character.'', ''\M => non-magic.'']' 1
-\Mx '[''\M => non-magic.'', ''x => literal character.'']' 1
+x\M '{''case'': 0, ''v'': [''x'', ''\M''], ''comp'': 0, ''o'': ''re''}' 1
+\Mx '{''case'': 0, ''v'': [''\M'', ''x''], ''comp'': 0, ''o'': ''re''}' 1
 # very_magic
 \v '[]' 0
-x\v '[''x => literal character.'', ''\v => very magic.'']' 1
-\vx '[''\v => very magic.'', ''x => literal character.'']' 1
+x\v '{''case'': 0, ''v'': [''x'', ''\v''], ''comp'': 0, ''o'': ''re''}' 1
+\vx '{''case'': 0, ''v'': [''\v'', ''x''], ''comp'': 0, ''o'': ''re''}' 1
 # very_no_magic
 \V '[]' 0
-x\V '[''x => literal character.'', ''\V => very non-magic.'']' 1
-\Vx '[''\V => very non-magic.'', ''x => literal character.'']' 1
+x\V '{''case'': 0, ''v'': [''x'', ''\V''], ''comp'': 0, ''o'': ''re''}' 1
+\Vx '{''case'': 0, ''v'': [''\V'', ''x''], ''comp'': 0, ''o'': ''re''}' 1
 # Concat
 \& '[]' 0
 a\& '[]' 0
-a\&b '[''a => literal character.'', ''\& => previous atom and next atom are required together (''''and'''').'', ''  b => literal character.'']' 1
+a\&b '{''case'': 0, ''v'': [{''v'': [''a'', ''b''], ''o'': ''\&''}], ''comp'': 0, ''o'': ''re''}' 1
 # Branch
 \| '[]' 0
 \| a '[]' 0
-a\|b '[''a => literal character.'', ''\| => previous atom and next atom are alternate choices (''''or'''').'', ''  b => literal character.'']' 1
+a\|b '{''case'': 0, ''v'': [{''v'': [''a'', ''b''], ''o'': ''\|''}], ''comp'': 0, ''o'': ''re''}' 1
 a \| '[]' 0
 # Multiple strings from http://oniguruma.rubyforge.org/svn/test/test_oniguruma.rb
-\(3.\)\(.*\&b*\)\(3.\) '[''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  . => any single character.'', ''  * => zero or more of the previous atom.'', ''\& => previous atom and next atom are required together (''''and'''').'', ''  b => literal character.'', ''  * => zero or more of the previous atom.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'']' 1
-c\(.\)t '[''c => literal character.'', ''\( => start capture group.'', ''  . => any single character.'', ''\) => end capture group.'', ''t => literal character.'']' 1
+\(3.\)\(.*\&b*\)\(3.\) '{''case'': 0, ''v'': [{''v'': [''3'', ''.''], ''o'': ''\(''}, {''v'': [{''v'': [{''v'': [''.''], ''o'': ''*''}, {''v'': [''b''], ''o'': ''*''}], ''o'': ''\&''}], ''o'': ''\(''}, {''v'': [''3'', ''.''], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
+c\(.\)t '{''case'': 0, ''v'': [''c'', {''v'': [''.''], ''o'': ''\(''}, ''t''], ''comp'': 0, ''o'': ''re''}' 1
 \(3.\)\(.*\)\(3.\)\) '[]' 0
-\(3.\)\(.*\)\(3.\) '[''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  . => any single character.'', ''  * => zero or more of the previous atom.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'']' 1
-1\+2\+ '[''1 => literal character.'', ''\+ => one or more of the previous atom.'', ''2 => literal character.'', ''\+ => one or more of the previous atom.'']' 1
-\(?<=2\)1\+2\+ '[''\( => start capture group.'', ''  ?<=2 => literal characters.'', ''\) => end capture group.'', ''1 => literal character.'', ''\+ => one or more of the previous atom.'', ''2 => literal character.'', ''\+ => one or more of the previous atom.'']' 1
-\(3.\)\(.*\)\(3.\) '[''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  . => any single character.'', ''  * => zero or more of the previous atom.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'']' 1
-pe '''pe => literal characters.''' 1
-(\?#\(\w\+?\)) '[''( => literal character.'', ''\? => zero or one of the previous atom.'', ''# => literal character.'', ''\( => start capture group.'', ''  \w => word ([a-zA-Z0-9_]).'', ''  \+ => one or more of the previous atom.'', ''  ? => literal character.'', ''\) => end capture group.'', '') => literal character.'']' 1
-expression '''expression => literal characters.''' 1
-^[a-z]*$ '['' => start of line.'', ''[ => start collection.'', ''  a-z => range of chars from a to z.'', ''] => end collection.'', ''* => zero or more of the previous atom.'', '' => end of line.'']' 1
-^[A-Z]*$ '['' => start of line.'', ''[ => start collection.'', ''  A-Z => range of chars from A to Z.'', ''] => end collection.'', ''* => zero or more of the previous atom.'', '' => end of line.'']' 1
-. '''. => any single character.''' 1
-SIT '''SIT => literal characters.''' 1
-at '''at => literal characters.''' 1
-/cat/im '''/cat/im => literal characters.''' 1
-\Cxcat '[''\C => match case.'', ''xcat => literal characters.'']' 1
-\(3.\)\(.*\)\(3.\) '[''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  . => any single character.'', ''  * => zero or more of the previous atom.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'']' 1
-\(3.\)\(ab\|.*\)\(3.\) '[''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  ab => literal characters.'', ''\| => previous atom and next atom are alternate choices (''''or'''').'', ''  . => any single character.'', ''  * => zero or more of the previous atom.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  3 => literal character.'', ''  . => any single character.'', ''\) => end capture group.'']' 1
-abc '''abc => literal characters.''' 1
-\(\w\+?\)\d\+\(\w\+\) '[''\( => start capture group.'', ''  \w => word ([a-zA-Z0-9_]).'', ''  \+ => one or more of the previous atom.'', ''  ? => literal character.'', ''\) => end capture group.'', ''\d => digit [0-9].'', ''\+ => one or more of the previous atom.'', ''\( => start capture group.'', ''  \w => word ([a-zA-Z0-9_]).'', ''  \+ => one or more of the previous atom.'', ''\) => end capture group.'']' 1
-Date:\(\d\{4}\)/\(\d\{2}\)/\(\d\{2}\) '[''Date: => literal characters.'', ''\( => start capture group.'', ''  \d => digit [0-9].'', ''  {4} => many as possible "greedy" match, exactly 4 of the previous atom.'', ''\) => end capture group.'', ''/ => literal character.'', ''\( => start capture group.'', ''  \d => digit [0-9].'', ''  {2} => many as possible "greedy" match, exactly 2 of the previous atom.'', ''\) => end capture group.'', ''/ => literal character.'', ''\( => start capture group.'', ''  \d => digit [0-9].'', ''  {2} => many as possible "greedy" match, exactly 2 of the previous atom.'', ''\) => end capture group.'']' 1
-\(test\).\+\(\k<Ð³Ñ€ÑƒÐ¿Ð¿Ð°>\) '[''\( => start capture group.'', ''  test => literal characters.'', ''\) => end capture group.'', ''. => any single character.'', ''\+ => one or more of the previous atom.'', ''\( => start capture group.'', ''  \k => keyword (:help ''''iskeyword'''').'', ''  <Ð³Ñ€ÑƒÐ¿Ð¿Ð°> => literal characters.'', ''\) => end capture group.'']' 1
-\(.\)\(.\)\(\d\+\)\(\d\) '[''\( => start capture group.'', ''  . => any single character.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  . => any single character.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  \d => digit [0-9].'', ''  \+ => one or more of the previous atom.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  \d => digit [0-9].'', ''\) => end capture group.'']' 1
-ca '''ca => literal characters.''' 1
-^\s*?\(\n|\r\) '['' => start of line.'', ''\s => whitespace.'', ''* => zero or more of the previous atom.'', ''? => literal character.'', ''\( => start capture group.'', ''  <NL>|<CR> => literal characters.'', ''\) => end capture group.'']' 1
-\(?<begin>(\)\(?<body>.*\)\(?<end>)\) '[''\( => start capture group.'', ''  ?<begin>( => literal characters.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  ?<body> => literal characters.'', ''  . => any single character.'', ''  * => zero or more of the previous atom.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  ?<end>) => literal characters.'', ''\) => end capture group.'']' 1
-\(?<Ð¸Ð¼Ñ>test\).\+\(\k<Ð¸Ð¼Ñ>\) '[''\( => start capture group.'', ''  ?<Ð¸Ð¼Ñ>test => literal characters.'', ''\) => end capture group.'', ''. => any single character.'', ''\+ => one or more of the previous atom.'', ''\( => start capture group.'', ''  \k => keyword (:help ''''iskeyword'''').'', ''  <Ð¸Ð¼Ñ> => literal characters.'', ''\) => end capture group.'']' 1
-\(.\+\).\+\(.\+\) '[''\( => start capture group.'', ''  . => any single character.'', ''  \+ => one or more of the previous atom.'', ''\) => end capture group.'', ''. => any single character.'', ''\+ => one or more of the previous atom.'', ''\( => start capture group.'', ''  . => any single character.'', ''  \+ => one or more of the previous atom.'', ''\) => end capture group.'']' 1
-\(?<a>.\+\).\+\(?<b>.\+\) '[''\( => start capture group.'', ''  ?<a> => literal characters.'', ''  . => any single character.'', ''  \+ => one or more of the previous atom.'', ''\) => end capture group.'', ''. => any single character.'', ''\+ => one or more of the previous atom.'', ''\( => start capture group.'', ''  ?<b> => literal characters.'', ''  . => any single character.'', ''  \+ => one or more of the previous atom.'', ''\) => end capture group.'']' 1
-\([Ð°-Ñ]\)\+ '[''\( => start capture group.'', ''  [ => start collection.'', ''  Ð°-Ñ => literal character(s).'', ''] => end collection.'', ''\) => end capture group.'', ''\+ => one or more of the previous atom.'']' 1
-Ñ€\(ÑƒÐ±Ð¸.*\) '[''Ñ€ => literal characters.'', ''\( => start capture group.'', ''  ÑƒÐ±Ð¸ => literal characters.'', ''  . => any single character.'', ''  * => zero or more of the previous atom.'', ''\) => end capture group.'']' 1
-\([Ð°-Ñ]\)\([Ð°-Ñ]\)\([Ð°-Ñ]\+\) '[''\( => start capture group.'', ''  [ => start collection.'', ''  Ð°-Ñ => literal character(s).'', ''] => end collection.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  [ => start collection.'', ''  Ð°-Ñ => literal character(s).'', ''] => end collection.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  [ => start collection.'', ''  Ð°-Ñ => literal character(s).'', ''] => end collection.'', ''\+ => one or more of the previous atom.'', ''\) => end capture group.'']' 1
-[Ð°-Ñ] '[''[ => start collection.'', ''  Ð°-Ñ => literal character(s).'', ''] => end collection.'']' 1
-12345 '''12345 => literal characters.''' 1
-214365 '''214365 => literal characters.''' 1
-\(.\)\(.\) '[''\( => start capture group.'', ''  . => any single character.'', ''\) => end capture group.'', ''\( => start capture group.'', ''  . => any single character.'', ''\) => end capture group.'']' 1
-\([^aeiou]\) '[''\( => start capture group.'', ''  [ => start collection.'', ''  ^ => caret.'', ''  aeiou => literal character(s).'', ''] => end collection.'', ''\) => end capture group.'']' 1
-[aeiou] '[''[ => start collection.'', ''  aeiou => literal character(s).'', ''] => end collection.'']' 1
-\([aeiou]\) '[''\( => start capture group.'', ''  [ => start collection.'', ''  aeiou => literal character(s).'', ''] => end collection.'', ''\) => end capture group.'']' 1
+\(3.\)\(.*\)\(3.\) '{''case'': 0, ''v'': [{''v'': [''3'', ''.''], ''o'': ''\(''}, {''v'': [{''v'': [''.''], ''o'': ''*''}], ''o'': ''\(''}, {''v'': [''3'', ''.''], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
+1\+2\+ '{''case'': 0, ''v'': [{''v'': [''1''], ''o'': ''\+''}, {''v'': [''2''], ''o'': ''\+''}], ''comp'': 0, ''o'': ''re''}' 1
+\(?<=2\)1\+2\+ '{''case'': 0, ''v'': [{''v'': [''?'', ''<'', ''='', ''2''], ''o'': ''\(''}, {''v'': [''1''], ''o'': ''\+''}, {''v'': [''2''], ''o'': ''\+''}], ''comp'': 0, ''o'': ''re''}' 1
+\(3.\)\(.*\)\(3.\) '{''case'': 0, ''v'': [{''v'': [''3'', ''.''], ''o'': ''\(''}, {''v'': [{''v'': [''.''], ''o'': ''*''}], ''o'': ''\(''}, {''v'': [''3'', ''.''], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
+pe '{''case'': 0, ''v'': [''p'', ''e''], ''comp'': 0, ''o'': ''re''}' 1
+(\?#\(\w\+?\)) '{''case'': 0, ''v'': [{''v'': [''(''], ''o'': ''\?''}, ''#'', {''v'': [{''v'': [''\w''], ''o'': ''\+''}, ''?''], ''o'': ''\(''}, '')''], ''comp'': 0, ''o'': ''re''}' 1
+expression '{''case'': 0, ''v'': [''e'', ''x'', ''p'', ''r'', ''e'', ''s'', ''s'', ''i'', ''o'', ''n''], ''comp'': 0, ''o'': ''re''}' 1
+^[a-z]*$ '{''case'': 0, ''v'': [''\_^'', {''v'': [{''v'': [{''v'': [''a'', ''z''], ''o'': ''-''}], ''negate'': 0, ''o'': ''[''}], ''o'': ''*''}, ''\_$''], ''comp'': 0, ''o'': ''re''}' 1
+^[A-Z]*$ '{''case'': 0, ''v'': [''\_^'', {''v'': [{''v'': [{''v'': [''A'', ''Z''], ''o'': ''-''}], ''negate'': 0, ''o'': ''[''}], ''o'': ''*''}, ''\_$''], ''comp'': 0, ''o'': ''re''}' 1
+. '{''case'': 0, ''v'': [''.''], ''comp'': 0, ''o'': ''re''}' 1
+SIT '{''case'': 0, ''v'': [''S'', ''I'', ''T''], ''comp'': 0, ''o'': ''re''}' 1
+at '{''case'': 0, ''v'': [''a'', ''t''], ''comp'': 0, ''o'': ''re''}' 1
+/cat/im '{''case'': 0, ''v'': [''/'', ''c'', ''a'', ''t'', ''/'', ''i'', ''m''], ''comp'': 0, ''o'': ''re''}' 1
+\Cxcat '{''case'': 0, ''v'': [''x'', ''c'', ''a'', ''t''], ''comp'': 0, ''o'': ''re''}' 1
+\(3.\)\(.*\)\(3.\) '{''case'': 0, ''v'': [{''v'': [''3'', ''.''], ''o'': ''\(''}, {''v'': [{''v'': [''.''], ''o'': ''*''}], ''o'': ''\(''}, {''v'': [''3'', ''.''], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
+\(3.\)\(ab\|.*\)\(3.\) '{''case'': 0, ''v'': [{''v'': [''3'', ''.''], ''o'': ''\(''}, {''v'': [{''v'': [[''a'', ''b''], {''v'': [''.''], ''o'': ''*''}], ''o'': ''\|''}], ''o'': ''\(''}, {''v'': [''3'', ''.''], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
+abc '{''case'': 0, ''v'': [''a'', ''b'', ''c''], ''comp'': 0, ''o'': ''re''}' 1
+\(\w\+?\)\d\+\(\w\+\) '{''case'': 0, ''v'': [{''v'': [{''v'': [''\w''], ''o'': ''\+''}, ''?''], ''o'': ''\(''}, {''v'': [''\d''], ''o'': ''\+''}, {''v'': [{''v'': [''\w''], ''o'': ''\+''}], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
+Date:\(\d\{4}\)/\(\d\{2}\)/\(\d\{2}\) '{''case'': 0, ''v'': [''D'', ''a'', ''t'', ''e'', '':'', {''v'': [{''greedy'': 1, ''upper'': '''', ''range'': 0, ''v'': [''\d''], ''lower'': 4, ''o'': ''\{''}], ''o'': ''\(''}, ''/'', {''v'': [{''greedy'': 1, ''upper'': '''', ''range'': 0, ''v'': [''\d''], ''lower'': 2, ''o'': ''\{''}], ''o'': ''\(''}, ''/'', {''v'': [{''greedy'': 1, ''upper'': '''', ''range'': 0, ''v'': [''\d''], ''lower'': 2, ''o'': ''\{''}], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
+\(test\).\+\(\k<Ð³Ñ€ÑƒÐ¿Ð¿Ð°>\) '{''case'': 0, ''v'': [{''v'': [''t'', ''e'', ''s'', ''t''], ''o'': ''\(''}, {''v'': [''.''], ''o'': ''\+''}, {''v'': [''\k'', ''<'', ''Ð'', ''³'', ''Ñ'', ''€'', ''Ñ'', ''ƒ'', ''Ð'', ''¿'', ''Ð'', ''¿'', ''Ð'', ''°'', ''>''], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
+\(.\)\(.\)\(\d\+\)\(\d\) '{''case'': 0, ''v'': [{''v'': [''.''], ''o'': ''\(''}, {''v'': [''.''], ''o'': ''\(''}, {''v'': [{''v'': [''\d''], ''o'': ''\+''}], ''o'': ''\(''}, {''v'': [''\d''], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
+ca '{''case'': 0, ''v'': [''c'', ''a''], ''comp'': 0, ''o'': ''re''}' 1
+^\s*?\(\n|\r\) '{''case'': 0, ''v'': [''\_^'', {''v'': [''\s''], ''o'': ''*''}, ''?'', {''v'': [''\n'', ''|'', ''\r''], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
+\(?<begin>(\)\(?<body>.*\)\(?<end>)\) '{''case'': 0, ''v'': [{''v'': [''?'', ''<'', ''b'', ''e'', ''g'', ''i'', ''n'', ''>'', ''(''], ''o'': ''\(''}, {''v'': [''?'', ''<'', ''b'', ''o'', ''d'', ''y'', ''>'', {''v'': [''.''], ''o'': ''*''}], ''o'': ''\(''}, {''v'': [''?'', ''<'', ''e'', ''n'', ''d'', ''>'', '')''], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
+\(?<Ð¸Ð¼Ñ>test\).\+\(\k<Ð¸Ð¼Ñ>\) '{''case'': 0, ''v'': [{''v'': [''?'', ''<'', ''Ð'', ''¸'', ''Ð'', ''¼'', ''Ñ'', '''', ''>'', ''t'', ''e'', ''s'', ''t''], ''o'': ''\(''}, {''v'': [''.''], ''o'': ''\+''}, {''v'': [''\k'', ''<'', ''Ð'', ''¸'', ''Ð'', ''¼'', ''Ñ'', '''', ''>''], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
+\(.\+\).\+\(.\+\) '{''case'': 0, ''v'': [{''v'': [{''v'': [''.''], ''o'': ''\+''}], ''o'': ''\(''}, {''v'': [''.''], ''o'': ''\+''}, {''v'': [{''v'': [''.''], ''o'': ''\+''}], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
+\(?<a>.\+\).\+\(?<b>.\+\) '{''case'': 0, ''v'': [{''v'': [''?'', ''<'', ''a'', ''>'', {''v'': [''.''], ''o'': ''\+''}], ''o'': ''\(''}, {''v'': [''.''], ''o'': ''\+''}, {''v'': [''?'', ''<'', ''b'', ''>'', {''v'': [''.''], ''o'': ''\+''}], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
+\([Ð°-Ñ]\)\+ '{''case'': 0, ''v'': [{''v'': [{''v'': [{''v'': [''Ð'', {''v'': [''°'', ''Ñ''], ''o'': ''-''}, ''''], ''negate'': 0, ''o'': ''[''}], ''o'': ''\(''}], ''o'': ''\+''}], ''comp'': 0, ''o'': ''re''}' 1
+Ñ€\(ÑƒÐ±Ð¸.*\) '{''case'': 0, ''v'': [''Ñ'', ''€'', {''v'': [''Ñ'', ''ƒ'', ''Ð'', ''±'', ''Ð'', ''¸'', {''v'': [''.''], ''o'': ''*''}], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
+\([Ð°-Ñ]\)\([Ð°-Ñ]\)\([Ð°-Ñ]\+\) '{''case'': 0, ''v'': [{''v'': [{''v'': [''Ð'', {''v'': [''°'', ''Ñ''], ''o'': ''-''}, ''''], ''negate'': 0, ''o'': ''[''}], ''o'': ''\(''}, {''v'': [{''v'': [''Ð'', {''v'': [''°'', ''Ñ''], ''o'': ''-''}, ''''], ''negate'': 0, ''o'': ''[''}], ''o'': ''\(''}, {''v'': [{''v'': [{''v'': [''Ð'', {''v'': [''°'', ''Ñ''], ''o'': ''-''}, ''''], ''negate'': 0, ''o'': ''[''}], ''o'': ''\+''}], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
+[Ð°-Ñ] '{''case'': 0, ''v'': [{''v'': [''Ð'', {''v'': [''°'', ''Ñ''], ''o'': ''-''}, ''''], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
+12345 '{''case'': 0, ''v'': [''1'', ''2'', ''3'', ''4'', ''5''], ''comp'': 0, ''o'': ''re''}' 1
+214365 '{''case'': 0, ''v'': [''2'', ''1'', ''4'', ''3'', ''6'', ''5''], ''comp'': 0, ''o'': ''re''}' 1
+\(.\)\(.\) '{''case'': 0, ''v'': [{''v'': [''.''], ''o'': ''\(''}, {''v'': [''.''], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
+\([^aeiou]\) '{''case'': 0, ''v'': [{''v'': [{''v'': [''a'', ''e'', ''i'', ''o'', ''u''], ''negate'': 1, ''o'': ''[''}], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
+[aeiou] '{''case'': 0, ''v'': [{''v'': [''a'', ''e'', ''i'', ''o'', ''u''], ''negate'': 0, ''o'': ''[''}], ''comp'': 0, ''o'': ''re''}' 1
+\([aeiou]\) '{''case'': 0, ''v'': [{''v'': [{''v'': [''a'', ''e'', ''i'', ''o'', ''u''], ''negate'': 0, ''o'': ''[''}], ''o'': ''\(''}], ''comp'': 0, ''o'': ''re''}' 1
 #  vim:ft=retests
