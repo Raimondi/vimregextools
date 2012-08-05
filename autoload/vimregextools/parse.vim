@@ -37,14 +37,19 @@ function! vimregextools#parse#walk(ast, visitor, ...) "{{{1
 endfunction
 
 function! s:walk(ast, visitor, ...) " {{{1
-  return type(a:ast) != type({}) ? a:ast
+  return type(a:ast) != type({}) && type(a:ast) != type([]) ? a:ast
         \ : ( a:0 ? call(a:visitor, [a:ast], a:1) : call(a:visitor, [a:ast]) )
 endfunction
 
 function! s:fix_eol(ast) "{{{1
   let a = copy(a:ast)
-  call map(a.v, 'type(v:val) == type("") && v:val == "\\_$"'
-        \ . '? "$" : s:walk(v:val, "s:fix_eol")')
+  let map = 'type(v:val) == type("") && v:val == "\\_$"'
+          \ . '? "\\$" : s:walk(v:val, "s:fix_eol")'
+  if type(a) == type({})
+    call map(a.v, map)
+  else
+    call map(a, map)
+  endif
   return a
 endfunction
 
@@ -75,7 +80,7 @@ function! vimregextools#parse#regexp(elems) abort
   " regexp ::= legal_flag ? pattern ? escape ? eore -> #regexp
   call s:Debug(a:elems, 2)
   let result = {'o': 're', 'v': []}
-  if !empty(a:elems[0])
+  if !empty(a:elems[0]) && !empty(a:elems[0][0])
     call extend(result.v, a:elems[0])
   endif
   if !empty(a:elems[1])
@@ -88,8 +93,8 @@ function! vimregextools#parse#regexp(elems) abort
   if !empty(a:elems[2])
     call add(result.v, a:elems[2][0])
   endif
-  let result.ignore_case = s:ignore_case
-  let result.ignore_composing = s:ignore_composing
+  let result.case = s:ignore_case
+  let result.comp = s:ignore_composing
   call s:Debug(result)
   return result
 endfunction "vimregextools#parser#regexp
@@ -209,7 +214,7 @@ function! vimregextools#parse#piece(elems) abort
     " Atom plus other multi.
     let mediator = {'o': a:elems[1][0], 'v': [a:elems[0]]}
   endif
-  " Add flags if any.
+  " Add flags, if any.
   if !empty(a:elems[2]) && !empty(a:elems[2][0]) && type(mediator) == type({})
     let result = [mediator, a:elems[2]]
   elseif !empty(a:elems[2]) && !empty(a:elems[2][0])
@@ -258,7 +263,16 @@ endfunction "vimregextools#parser#flag
 function! vimregextools#parse#capture_group(elems) abort
   " capture_group ::= open_capture_group pattern close_group -> #capture_group
   call s:Debug(a:elems, 2)
-  let result = {'o': a:elems[0], 'v': [get(get(a:elems, 1, []), 0, [])]}
+  "let result = {'o': a:elems[0], 'v': [get(get(a:elems, 1, []), 0, [])]}
+  let result = {'o': a:elems[0]}
+  if empty(a:elems[1])
+        \ || (len(a:elems[1]) == 1 && type(a:elems[1][0]) == type([])
+        \     && empty(a:elems[1][0]))
+    let result.v = []
+  else
+    let result.v = type(a:elems[1][0]) == type([])
+          \ ? a:elems[1][0] : [a:elems[1][0]]
+  endif
   call s:Debug(result)
   return result
 endfunction "vimregextools#parser#capture_group
@@ -267,7 +281,13 @@ endfunction "vimregextools#parser#capture_group
 function! vimregextools#parse#non_capture_group(elems) abort
   " non_capture_group ::= open_non_capture_group pattern close_group -> #non_capture_group
   call s:Debug(a:elems, 2)
-  let result = get(get(a:elems, 1, []), 0, [])
+  if empty(a:elems[1])
+        \ || (len(a:elems[1]) == 1 && type(a:elems[1][0]) == type([])
+        \     && empty(a:elems[1][0]))
+    let result = []
+  else
+    let result = [a:elems[1][0]]
+  endif
   call s:Debug(result)
   return result
 endfunction "vimregextools#parser#non_capture_group
@@ -431,7 +451,6 @@ function! vimregextools#parse#coll_inner(elems) abort
   call s:Debug(a:elems, 2)
   let elems = a:elems
   if type(elems[0]) == type('') && elems[0] == ']'
-    echo 1
     let result = ['\'.remove(elems, 0)]
     if !empty(elems)
       call extend(result, elems[0])
@@ -439,7 +458,6 @@ function! vimregextools#parse#coll_inner(elems) abort
   else
     let result = []
     for i in elems
-      echo i
       if type(i) == type([])
         call add(result, i[1])
       else
@@ -551,15 +569,21 @@ function! vimregextools#parse#equivalence(elems) abort
   return result
 endfunction "vimregextools#parser#equivalence
 
-"escaped_char() {{{1
-function! vimregextools#parse#escaped_char(elems) abort
-  " escaped_char ::= esc | tab | cr | bs | lb | '\\[^@%{}()]' -> #escaped_char
+"char() {{{1
+function! vimregextools#parse#char(elems) abort
+  " char ::= escaped_char | '[^\\[.]' -> #char
   call s:Debug(a:elems, 2)
   " Use only the second char of non special escaped sequences.
-  let result = type(a:elems) == type([]) ? a:elems[1] : a:elems
+  if type(a:elems) == type([])
+    let result = a:elems[1]
+  elseif type(a:elems) == type('') && a:elems == '$'
+    let result = '\' . a:elems
+  else
+    let result = a:elems
+  endif
   call s:Debug(result)
   return result
-endfunction "vimregextools#parser#escaped_char
+endfunction "vimregextools#parser#char
 
 " Playground {{{1
 "2RE a\|b
