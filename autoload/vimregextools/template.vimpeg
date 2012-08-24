@@ -38,7 +38,7 @@ open_non_capture_group  ::= '<%=magic(false, true, true, true)%>' '%('          
 close_capture_group     ::= '<%=magic(false, true, true, true)%>' ')'                  -> #close_capture_group
 close_non_capture_group ::= '<%=magic(false, true, true, true)%>' ')'              -> #close_non_capture_group
 ; Quantifiers {{{2
-multi    ::= quant_star | quant_plus | quant_equal | quant_question | curly | look_around
+multi    ::= quant_star | quant_plus | quant_equal | quant_question | curly | look_around -> #multi
 quant_star     ::= '<%=magic(false, false, true, true)%>' '*'
 quant_plus     ::= '<%=magic(false, true, true, true)%>' '+'
 quant_equal    ::= '<%=magic(false, true, true, true)%>' '='
@@ -186,8 +186,9 @@ nl_or_uppercase            ::= '\\_u'
 non_uppercase              ::= '\\U'
 nl_or_non_uppercase        ::= '\\_U'
 ; Char items {{{3
-char         ::= escaped_char | '[^\\[.]' -> #char
-escaped_char ::= esc | tab | cr | bs | lb | tilde | period | '\\' '[^+=?&|@%{}()]'
+char         ::= magic_char | escaped_char | '[^\\[.]' -> #char
+escaped_char ::= esc | tab | cr | bs | lb | tilde | period | '\\' '[^[\].~<>*+=?&|@%{()]'
+magic_char   ::= at | percent | bracketl | bracketr | parenl | parenr | curlyl | tilde | period | lt | gt | star | plus | equal | question
 at           ::= '<%=magic(true, false, false, false)%>' '@'
 percent      ::= '<%=magic(true, false, false, false)%>' '%'
 bracketl     ::= '<%=magic(true, true, false, false)%>' '\['

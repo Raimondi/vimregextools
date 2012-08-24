@@ -25,9 +25,19 @@ function! vimregextools#parse#match(re, ...) "{{{1
   let s:bol_stack = [0]
   let s:eol_level = 0
   call s:Debug('/' . escape(a:re, '/') . '/')
-  redir => g:log
-  let result = g:vimregextools#parser#now.match(a:re)
-  redir END
+  let s:magic = matchstr(matchstr(a:re, '\C^\%(\\[vVmMZcC]\)*'), '\C\\[vVmM]')
+  let s:magic = empty(s:magic) ? '\m' : s:magic
+  "redir => g:log
+  if empty(s:magic) || s:magic ==# '\m'
+    let result = g:vimregextools#parser_magic#now.match(a:re)
+  elseif s:magic ==# '\M'
+    let result = g:vimregextools#parser_non_magic#now.match(a:re)
+  elseif s:magic ==# '\v'
+    let result = g:vimregextools#parser_very_magic#now.match(a:re)
+  elseif s:magic ==# '\V'
+    let result = g:vimregextools#parser_very_non_magic#now.match(a:re)
+  endif
+  "redir END
   let g:output = 1
   return result
 endfunction "Parse
@@ -93,6 +103,7 @@ function! vimregextools#parse#regexp(elems) abort
   if !empty(a:elems[2])
     call add(result.v, a:elems[2][0])
   endif
+  let result.magic = s:magic
   let result.case = s:ignore_case
   let result.comp = s:ignore_composing
   call s:Debug(result)
@@ -127,7 +138,7 @@ endfunction "vimregextools#parser#pattern
 function! vimregextools#parse#or(elems) abort
   " or ::= '\\|' -> #or
   call s:ChLvl('-')
-  let result = a:elems
+  let result = '\'.a:elems[1]
   call s:ChLvl('+')
   let s:bol_stack[-1] = get(s:bol_stack, -2, 0)
   call s:Debug(result . ' -> ' . string(s:bol_stack))
@@ -169,7 +180,7 @@ endfunction "vimregextools#parser#branch
 function! vimregextools#parse#and(elems) abort
   " and ::= '\\&' -> #and
   call s:ChLvl('-')
-  let result = a:elems
+  let result = '\'.a:elems[1]
   call s:ChLvl('+')
   let s:bol_stack[-1] = get(s:bol_stack, -2, 0)
   call s:Debug(result . ' -> ' . string(s:bol_stack))
@@ -295,7 +306,7 @@ endfunction "vimregextools#parser#non_capture_group
 "open_capture_group() {{{1
 function! vimregextools#parse#open_capture_group(elems) abort
   " open_capture_group ::= '\\(' -> #open_capture_group
-  let result = a:elems
+  let result = '\'.a:elems[1]
   call s:ChLvl('+')
   call add(s:bol_stack, get(s:bol_stack, -1, 0))
   call s:Debug(string(result) . ' -> ' . string(s:bol_stack))
@@ -305,7 +316,7 @@ endfunction "vimregextools#parser#open_capture_group
 "open_non_capture_group() {{{1
 function! vimregextools#parse#open_non_capture_group(elems) abort
   " open_non_capture_group ::= '\\%(' -> #open_non_capture_group
-  let result = a:elems
+  let result = '\'.a:elems[1]
   call s:ChLvl('+')
   call add(s:bol_stack, get(s:bol_stack, -1, 0))
   call s:Debug(string(result) . ' -> ' . string(s:bol_stack))
@@ -332,11 +343,21 @@ function! vimregextools#parse#close_capture_group(elems) abort
   return result
 endfunction "vimregextools#parser#close_capture_group
 
+"multi() {{{1
+function! vimregextools#parse#multi(elems) abort
+  " multi ::= quant_star | quant_plus | quant_equal | quant_question | curly | look_around -> #multi
+  call s:Debug(a:elems)
+  if type(a:elems) == type([])
+    let result = (a:elems[1] =~ '[*]' ? '' : '\') . a:elems[1]
+  call s:Debug(result)
+  return result
+endfunction "vimregextools#parser#multi
+
 "curly() {{{1
 function! vimregextools#parse#curly(elems) abort
   " curly ::= start_curly '-' ? lower ? ( ',' upper ? ) ? end_curly -> #curly
   call s:Debug(a:elems)
-  let result = {'o': a:elems[0]}
+  let result = {'o': '\'.a:elems[0][1]}
   let list = a:elems[1:-2]
   if empty(list[2])
     call insert(list, '', 3)
@@ -364,29 +385,33 @@ endfunction "vimregextools#parser#number
 
 "ordinary_atom() {{{1
 function! vimregextools#parse#ordinary_atom(elems) abort
-  " ordinary_atom ::= dot | nl_or_dot | anchor | char_class | collection | sequence | back_reference | last_substitution | char -> #ordinary_atom
+  " ordinary_atom ::= any | nl_or_any | anchor | char_class | collection | sequence | back_reference | last_substitution | char -> #ordinary_atom
   call s:Debug(a:elems, 2)
-  let result = a:elems
+  if type(a:elems) == type([])
+    let result = (a:elems[1] =~ '^[$^]$' ? '\_' : a:elems[1] =~ '^[.]$' ? '' : '\') . a:elems[1]
+  else
+    let result = a:elems
+  endif
   call s:Debug(result)
   let s:bol_stack[-1] = 1
   return result
 endfunction "vimregextools#parser#ordinary_atom
 
-"dot() {{{1
-function! vimregextools#parse#dot(elems) abort
-  " dot ::= '\.' -> #dot
+"any() {{{1
+function! vimregextools#parse#any(elems) abort
+  " any ::= '\.' -> #any
   let result = '.'
   call s:Debug(result)
   return result
-endfunction "vimregextools#parser#dot
+endfunction "vimregextools#parser#any
 
-"nl_or_dot() {{{1
-function! vimregextools#parse#nl_or_dot(elems) abort
-  " nl_or_dot ::= '\\_\.' -> #nl_or_dot
+"nl_or_any() {{{1
+function! vimregextools#parse#nl_or_any(elems) abort
+  " nl_or_any ::= '\\_\.' -> #nl_or_any
   let result = {'o': '\|', 'v': ['.', '\n']}
   call s:Debug(result)
   return result
-endfunction "vimregextools#parser#nl_or_dot
+endfunction "vimregextools#parser#nl_or_any
 
 "bol() {{{1
 function! vimregextools#parse#bol(elems) abort
@@ -413,7 +438,7 @@ endfunction "vimregextools#parser#eol
 function! vimregextools#parse#mark(elems) abort
   " mark ::= '\\%''' '[[:alnum:]<>[\]''"^.(){}]' -> #mark
   call s:Debug(a:elems, 2)
-  let result = {'o': a:elems[0] . get(a:elems, 2, ''), 'v': [a:elems[1]]}
+  let result = {'o': '\'.a:elems[1] . get(a:elems, 3, ''), 'v': [a:elems[2]]}
   call s:Debug(result)
   return result
 endfunction "vimregextools#parser#mark
@@ -490,7 +515,7 @@ endfunction "vimregextools#parser#end_collection
 "coll_start() {{{1
 function! vimregextools#parse#coll_start(elems) abort
   " coll_start ::= '\\_' -> #coll_start
-  let result = a:elems
+  let result = a:elems[1]
   call s:ChLvl('+')
   call s:Debug(result)
   return result
@@ -555,7 +580,7 @@ function! vimregextools#parse#sequence(elems) abort
   call s:Debug(a:elems, 2)
   let list = a:elems[1]
   call map(list, 'type(v:val) == type([]) ? v:val[1] : v:val')
-  let result = {'o': a:elems[0], 'v': list}
+  let result = {'o': '\'.a:elems[0][1], 'v': list}
   call s:Debug(result)
   return result
 endfunction "vimregextools#parser#sequence
@@ -575,7 +600,8 @@ function! vimregextools#parse#char(elems) abort
   call s:Debug(a:elems, 2)
   " Use only the second char of non special escaped sequences.
   if type(a:elems) == type([])
-    let result = a:elems[1]
+    "let result = (a:elems[1] =~ '[@%\[\]()<>+=?]' ? '' : '\') . a:elems[1]
+    let result = (a:elems[1] =~ '[*.~]' ? '\' : '') . a:elems[1]
   elseif type(a:elems) == type('') && a:elems == '$'
     let result = '\' . a:elems
   else
