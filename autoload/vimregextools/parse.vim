@@ -250,6 +250,43 @@ function! vimregextools#parse#atom(elems) abort
   return result
 endfunction "vimregextools#parser#atom
 
+"err1() {{{1
+function! vimregextools#parse#err1(elems) abort
+  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
+  call s:Debug(a:elems, 2)
+  let result = a:elems
+  call s:Debug(result)
+  "throw "1 unmatched ("
+  throw "1 unmatched ("
+  return result
+endfunction "vimregextools#parser#err1
+
+"err2() {{{1
+function! vimregextools#parse#err2(elems) abort
+  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
+  call s:Debug(a:elems, 2)
+  let result = a:elems
+  call s:Debug(result)
+  "throw "2 unmatched )"
+  throw "2 unmatched )"
+  return result
+endfunction "vimregextools#parser#err2
+
+"err3() {{{1
+function! vimregextools#parse#err3(elems) abort
+  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
+  call s:Debug(a:elems, 2)
+  let result = a:elems
+  call s:Debug(result)
+  if type(a:elems[0]) == type([])
+    let s = join(a:elems[0], '')
+  else
+    let s = a:elems[0].o
+  endif
+  throw "3 nested " . s
+  return result
+endfunction "vimregextools#parser#err3
+
 "flag() {{{1
 function! vimregextools#parse#flag(elems) abort
   " flag    ::= case_flag | magic_flag | ignore_comb_chars -> #flag

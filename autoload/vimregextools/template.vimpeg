@@ -16,8 +16,11 @@ or      ::= '<%=magic(false, true, true, true)%>' '|'                           
 branch  ::= concat ( and concat ) *                                              -> #branch
 and     ::= '<%=magic(false, true, true, true)%>' '&'                                                                -> #and
 concat  ::= piece +                                                              -> #concat
-piece   ::= atom multi ? flag *                                                  -> #piece
-atom    ::= flag * ( non_capture_group | capture_group | ordinary_atom )         -> #atom
+piece   ::= atom ( err3 | multi ) ? flag *                                                  -> #piece
+atom    ::= flag * ( non_capture_group | capture_group | ordinary_atom | err1 | err2 )         -> #atom
+err1    ::= ( open_capture_group | open_non_capture_group ) pattern ? -> #err1
+err2    ::= close_capture_group | close_non_capture_group -> #err2
+err3    ::= multi multi + -> #err3
 flag    ::= case_flag | magic_flag | ignore_comb_chars -> #flag
 ; Flags {{{2
 legal_flag              ::= case_flag | ignore_comb_chars -> #flag
