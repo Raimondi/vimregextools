@@ -349,6 +349,9 @@ function! vimregextools#parse#multi(elems) abort
   call s:Debug(a:elems)
   if type(a:elems) == type([])
     let result = (a:elems[1] =~ '[*]' ? '' : '\') . a:elems[1]
+  else
+    let result = a:elems
+  endif
   call s:Debug(result)
   return result
 endfunction "vimregextools#parser#multi
