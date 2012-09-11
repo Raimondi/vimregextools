@@ -25,7 +25,7 @@ function! vimregextools#parse#match(re, ...) "{{{1
   let s:bol_stack = [0]
   let s:eol_level = 0
   call s:Debug('/' . escape(a:re, '/') . '/')
-  let s:magic = matchstr(matchstr(a:re, '\C^\%(\\[vVmMZcC]\)*'), '\C\\[vVmM]')
+  let s:magic = matchstr(matchstr(a:re, '\C\m^\%(\\[vVmMZcC]\)*'), '\C\m\\[vVmM]')
   let s:magic = empty(s:magic) ? '\m' : s:magic
   "redir => g:log
   if empty(s:magic) || s:magic ==# '\m'
