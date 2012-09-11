@@ -292,12 +292,15 @@ endfunction "vimregextools#parser#capture_group
 function! vimregextools#parse#non_capture_group(elems) abort
   " non_capture_group ::= open_non_capture_group pattern close_group -> #non_capture_group
   call s:Debug(a:elems, 2)
+  "let result = {'o': a:elems[0], 'v': [get(get(a:elems, 1, []), 0, [])]}
+  let result = {'o': a:elems[0]}
   if empty(a:elems[1])
         \ || (len(a:elems[1]) == 1 && type(a:elems[1][0]) == type([])
         \     && empty(a:elems[1][0]))
-    let result = []
+    let result.v = []
   else
-    let result = [a:elems[1][0]]
+    let result.v = type(a:elems[1][0]) == type([])
+          \ ? a:elems[1][0] : [a:elems[1][0]]
   endif
   call s:Debug(result)
   return result
