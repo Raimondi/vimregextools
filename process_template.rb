@@ -28,5 +28,5 @@ template = ERB.new(input.read)
   output = File.new(File.dirname(input.path) + '/' + 'parser_' + $magic.to_s + '.vimpeg' , "w")
   output.write(template.result())
   output.close
-  `vim -c 'VimPEG!' -c 'q!' #{output.path}`
+  `vim -c 'VimPEG!' -e -c 'q!' #{output.path}`
 end
