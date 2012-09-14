@@ -7,7 +7,7 @@
 .root_element = 'regexp'
 .ignore_case  = false
 .debug        = true
-.verbose      = 0
+.verbose      = 2
 
 ; RegExp syntax {{{1
 regexp  ::= legal_flag ? pattern ? escape ? eore                                 -> #regexp
@@ -17,11 +17,22 @@ branch  ::= concat ( and concat ) *                                             
 and     ::= '<%=magic(false, true, true, true)%>' '&'                                                                -> #and
 concat  ::= piece +                                                              -> #concat
 piece   ::= atom ( err3 | multi ) ? flag *                                                  -> #piece
-atom    ::= flag * ( non_capture_group | capture_group | ordinary_atom | err1 | err2 )         -> #atom
+atom    ::= flag * ( non_capture_group | capture_group | ordinary_atom | err1 )         -> #atom
+; Unmatched (
 err1    ::= ( open_capture_group | open_non_capture_group ) pattern ? -> #err1
-err2    ::= close_capture_group | close_non_capture_group -> #err2
+; Unmatched ) TODO
+err2    ::= '<%=magic(false, true, true, true)%>' ')' -> #err2
+; nested quantifiers
 err3    ::= multi multi + -> #err3
-flag    ::= case_flag | magic_flag | ignore_comb_chars -> #flag
+; Invalid character after @
+err4 ::= '<%=magic(false, true, true, true)%>' '@\%([^<]\|<[^=!]\)' -> #err4
+; Invalid character after %
+err5 ::= '<%=magic(false, true, true, true)%>' '%\([^0-9(]\|\d\+[^lcv]\)' -> #err5
+; Syntax error in {...}
+err6 ::= start_curly '[^}]' + end_curly -> #err6
+; Invalid use of \_
+err7 ::= '\\_.' -> #err7
+flag ::= case_flag | magic_flag | ignore_comb_chars -> #flag
 ; Flags {{{2
 legal_flag              ::= case_flag | ignore_comb_chars -> #flag
 ignore_comb_chars       ::= '\\Z'
@@ -46,7 +57,7 @@ quant_star     ::= '<%=magic(false, false, true, true)%>' '*'
 quant_plus     ::= '<%=magic(false, true, true, true)%>' '+'
 quant_equal    ::= '<%=magic(false, true, true, true)%>' '='
 quant_question ::= '<%=magic(false, true, true, true)%>' '?'
-curly    ::= start_curly '-' ? lower ? ( ',' upper ? ) ? end_curly                       -> #curly
+curly    ::= start_curly '-' ? lower ? ( ',' upper ? ) ? end_curly  | err6                      -> #curly
 ; Curly items {{{3
 start_curly   ::= '<%=magic(false, true, true, true)%>' '{'
 end_curly     ::= escape ? '}'
@@ -55,7 +66,7 @@ greedy        ::= lower ? ( ',' upper ? ) ? | ',' upper
 lower         ::= number
 upper         ::= number
 number        ::= '\d\+'                                -> #number
-look_around   ::= at_ahead | at_no_ahead | at_behind | at_no_behind | at_whole
+look_around   ::= at_ahead | at_no_ahead | at_behind | at_no_behind | at_whole | err4
 at_ahead      ::= '<%=magic(false, true, true, true)%>' '@='
 at_no_ahead   ::= '<%=magic(false, true, true, true)%>' '@!'
 at_behind     ::= '<%=magic(false, true, true, true)%>' '@<='
@@ -66,7 +77,7 @@ ordinary_atom ::= any | nl_or_any | anchor | char_class | collection | sequence 
 any       ::= '<%=magic(false, false, true, true)%>' '\.'
 nl_or_any ::= '\\_\.' -> #nl_or_any
 ; Anchors {{{2
-anchor ::= eol | bol | bol_any | eol_any | bow | eow | zs | ze | bof | eof | visual | cursor | mark | line | column | virtual_column
+anchor ::= eol | bol | bol_any | eol_any | bow | eow | zs | ze | bof | eof | visual | cursor | mark | line | column | virtual_column | err5
 ; {{{3
 bol            ::= '<%=magic(false, false, false, true)%>' '\^'                                 -> #bol
 bol_any        ::= '\\_\^'
@@ -133,7 +144,7 @@ last_substitution ::= '<%=magic(false, false, true, true)%>' '\~'
 ; Character classes {{{2
 char_class ::= char_or_nl_classes | char_classes -> #char_class
 ; Char classes items {{{3
-char_or_nl_classes         ::= nl_or_identifier | nl_or_identifier_no_digits | nl_or_keyword | nl_or_non_keyword | nl_or_file_name | nl_or_file_name_no_digits |  nl_or_printable | nl_or_printable_no_digits | nl_or_whitespace | nl_or_non_whitespace | nl_or_digit | nl_or_non_digit | nl_or_hex_digit | nl_or_non_hex_digit | nl_or_octal_digit | nl_or_non_octal_digit | nl_or_word | nl_or_non_word | nl_or_head | nl_or_non_head | nl_or_alpha | nl_or_non_alpha | nl_or_lowercase | nl_or_non_lowercase | nl_or_uppercase | nl_or_non_uppercase
+char_or_nl_classes         ::= nl_or_identifier | nl_or_identifier_no_digits | nl_or_keyword | nl_or_non_keyword | nl_or_file_name | nl_or_file_name_no_digits |  nl_or_printable | nl_or_printable_no_digits | nl_or_whitespace | nl_or_non_whitespace | nl_or_digit | nl_or_non_digit | nl_or_hex_digit | nl_or_non_hex_digit | nl_or_octal_digit | nl_or_non_octal_digit | nl_or_word | nl_or_non_word | nl_or_head | nl_or_non_head | nl_or_alpha | nl_or_non_alpha | nl_or_lowercase | nl_or_non_lowercase | nl_or_uppercase | nl_or_non_uppercase | err7
 char_classes               ::= identifier | identifier_no_digits | keyword | non_keyword | file_name | file_name_no_digits |  printable | printable_no_digits | whitespace | non_whitespace | digit | non_digit | hex_digit | non_hex_digit | octal_digit | non_octal_digit | word | non_word | head | non_head | alpha | non_alpha | lowercase | non_lowercase | uppercase | non_uppercase
 underscore                 ::= '_'
 identifier                 ::= '\\i'
