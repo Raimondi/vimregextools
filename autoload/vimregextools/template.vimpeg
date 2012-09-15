@@ -27,12 +27,18 @@ err3    ::= multi multi + -> #err3
 ; Invalid character after @
 err4 ::= '<%=magic(false, true, true, true)%>' '@\%([^<]\|<[^=!]\)' -> #err4
 ; Invalid character after %
-err5 ::= '<%=magic(false, true, true, true)%>' '%\([^0-9(]\|\d\+[^lcv]\)' -> #err5
+err5 ::= '<%=magic(false, true, true, true)%>' '%\([^0-9([]\|\d\+[^lcv]\)' -> #err5
 ; Syntax error in {...}
 err6 ::= start_curly '[^}]' + end_curly -> #err6
 ; Invalid use of \_
 err7 ::= '\\_.' -> #err7
-flag ::= case_flag | magic_flag | ignore_comb_chars -> #flag
+; Missing ] after %[
+err8 ::= start_sequence ( collection | seq_char ) + eore -> #err8
+; Empty %[]
+err9 ::= start_sequence end_sequence -> #err9
+; Invalid item in %[]
+err10 ::= '<%=magic(false, true, true, true)%>' ( '%\?(' | ')' | '&' | '|' ) -> #err10
+flag  ::= case_flag | magic_flag | ignore_comb_chars -> #flag
 ; Flags {{{2
 legal_flag              ::= case_flag | ignore_comb_chars -> #flag
 ignore_comb_chars       ::= '\\Z'
@@ -131,7 +137,7 @@ bc_escape           ::= 'escape'
 bc_backspace        ::= 'backspace'
 coll_char           ::= esc | tab | cr | bs | lb | !'\]' ( '\\\\' | '\\]' | '.' ) -> #coll_char
 ; Sequence {{{2
-sequence          ::= start_sequence ( collection | seq_char ) + end_sequence -> #sequence
+sequence          ::= start_sequence ( err10 | collection | seq_char ) + end_sequence | err8 | err9 -> #sequence
 ; Sequence items {{{3
 seq_char          ::= seq_escaped_char | !']' '.'
 seq_escaped_char  ::= esc | tab | cr | bs | lb | '\\.'

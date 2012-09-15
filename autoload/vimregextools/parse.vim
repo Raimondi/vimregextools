@@ -27,6 +27,8 @@ function! vimregextools#parse#match(re, ...) "{{{1
   call s:Debug('/' . escape(a:re, '/') . '/')
   let s:magic = matchstr(matchstr(a:re, '\C\m^\%(\\[vVmMZcC]\)*'), '\C\m\\[vVmM]')
   let s:magic = empty(s:magic) ? '\m' : s:magic
+  let save_mfd = &maxfuncdepth
+  set maxfuncdepth=1000
   "redir => g:log
   if empty(s:magic) || s:magic ==# '\m'
     let result = g:vimregextools#parser_magic#now.match(a:re)
@@ -38,6 +40,7 @@ function! vimregextools#parse#match(re, ...) "{{{1
     let result = g:vimregextools#parser_very_non_magic#now.match(a:re)
   endif
   "redir END
+  let &maxfuncdepth = save_mfd
   let g:output = 1
   return result
 endfunction "Parse
@@ -330,6 +333,36 @@ function! vimregextools#parse#err7(elems) abort
   return result
 endfunction "vimregextools#parser#err7
 
+"err8() {{{1
+function! vimregextools#parse#err8(elems) abort
+  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
+  call s:Debug(a:elems, 2)
+  let result = a:elems
+  call s:Debug(result)
+  call s:error(8, 'missing ] after %[')
+  return result
+endfunction "vimregextools#parser#err8
+
+"err9() {{{1
+function! vimregextools#parse#err9(elems) abort
+  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
+  call s:Debug(a:elems, 2)
+  let result = a:elems
+  call s:Debug(result)
+  call s:error(9, 'empty %[]')
+  return result
+endfunction "vimregextools#parser#err9
+
+"err10() {{{1
+function! vimregextools#parse#err10(elems) abort
+  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
+  call s:Debug(a:elems, 2)
+  let result = a:elems
+  call s:Debug(result)
+  call s:error(10, 'invalid item in %[]')
+  return result
+endfunction "vimregextools#parser#err10
+
 "flag() {{{1
 function! vimregextools#parse#flag(elems) abort
   " flag    ::= case_flag | magic_flag | ignore_comb_chars -> #flag
@@ -392,6 +425,10 @@ function! vimregextools#parse#open_capture_group(elems) abort
   let result = '\'.a:elems[1]
   call s:ChLvl('+')
   call add(s:bol_stack, get(s:bol_stack, -1, 0))
+  let s:capture_level += 1
+  if s:capture_level > 9
+    call s:error(8, 'too many (')
+  endif
   call s:Debug(string(result) . ' -> ' . string(s:bol_stack))
   return result
 endfunction "vimregextools#parser#open_capture_group
@@ -422,6 +459,7 @@ function! vimregextools#parse#close_capture_group(elems) abort
   call s:ChLvl('-')
   let result = a:elems
   call remove(s:bol_stack, -1)
+  let s:capture_level -= 1
   call s:Debug(string(result) . ' -> ' . string(s:bol_stack))
   return result
 endfunction "vimregextools#parser#close_capture_group
