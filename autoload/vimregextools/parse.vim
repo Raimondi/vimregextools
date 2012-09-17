@@ -37,6 +37,9 @@ function! vimregextools#parse#match(re, ...) "{{{1
   elseif s:magic ==# '\V'
     let result = g:vimregextools#parser_very_non_magic#now.match(a:re)
   endif
+  let result.magic = s:magic
+  let result.case = s:ignore_case
+  let result.comp = s:ignore_composing
   "redir END
   let g:output = 1
   return result
@@ -103,9 +106,6 @@ function! vimregextools#parse#regexp(elems) abort
   if !empty(a:elems[2])
     call add(result.v, a:elems[2][0])
   endif
-  let result.magic = s:magic
-  let result.case = s:ignore_case
-  let result.comp = s:ignore_composing
   call s:Debug(result)
   return result
 endfunction "vimregextools#parser#regexp
