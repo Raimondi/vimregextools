@@ -18,26 +18,6 @@ and     ::= '<%=magic(false, true, true, true)%>' '&'                           
 concat  ::= piece +                                                              -> #concat
 piece   ::= atom ( err3 | multi ) ? flag *                                                  -> #piece
 atom    ::= flag * ( non_capture_group | capture_group | ordinary_atom | err1 )         -> #atom
-; Unmatched (
-err1    ::= ( open_capture_group | open_non_capture_group ) pattern ? -> #err1
-; Unmatched ) TODO
-err2    ::= '<%=magic(false, true, true, true)%>' ')' -> #err2
-; nested quantifiers
-err3    ::= multi multi + -> #err3
-; Invalid character after @
-err4 ::= '<%=magic(false, true, true, true)%>' '@\%([^<]\|<[^=!]\)' -> #err4
-; Invalid character after %
-err5 ::= '<%=magic(false, true, true, true)%>' '%\([^0-9([]\|\d\+[^lcv]\)' -> #err5
-; Syntax error in {...}
-err6 ::= start_curly '[^}]' + end_curly -> #err6
-; Invalid use of \_
-err7 ::= '\\_.' -> #err7
-; Missing ] after %[
-err8 ::= start_sequence ( collection | seq_char ) + eore -> #err8
-; Empty %[]
-err9 ::= start_sequence end_sequence -> #err9
-; Invalid item in %[]
-err10 ::= '<%=magic(false, true, true, true)%>' ( '%\?(' | ')' | '&' | '|' ) -> #err10
 flag  ::= case_flag | magic_flag | ignore_comb_chars -> #flag
 ; Flags {{{2
 legal_flag              ::= case_flag | ignore_comb_chars -> #flag
@@ -78,44 +58,51 @@ at_no_ahead   ::= '<%=magic(false, true, true, true)%>' '@!'
 at_behind     ::= '<%=magic(false, true, true, true)%>' '@<='
 at_no_behind  ::= '<%=magic(false, true, true, true)%>' '@<!'
 at_whole      ::= '<%=magic(false, true, true, true)%>' '@>'
-ordinary_atom ::= any | nl_or_any | anchor | char_class | collection | sequence | back_reference | last_substitution | char -> #ordinary_atom
+ordinary_atom ::= any | nl_or_any | anchor | char_class | char_code | collection | sequence | back_reference | last_substitution | char -> #ordinary_atom
 ; Any {{{2
 any       ::= '<%=magic(false, false, true, true)%>' '\.'
 nl_or_any ::= '\\_\.' -> #nl_or_any
 ; Anchors {{{2
 anchor ::= eol | bol | bol_any | eol_any | bow | eow | zs | ze | bof | eof | visual | cursor | mark | line | column | virtual_column | err5
 ; {{{3
-bol            ::= '<%=magic(false, false, false, true)%>' '\^'                                 -> #bol
-bol_any        ::= '\\_\^'
-eol            ::= & ( '<%=magic(false, false, false, true)%>'  '\$\%(\\)\)*\%(\\&\|\\|\|$\)' ) '<%=magic(false, false, false, true)%>' '\$' -> #eol
-eol_any        ::= '\\_\$'
-bow            ::= '<%=magic(false, true, true, true)%>' '<'
-eow            ::= '<%=magic(false, true, true, true)%>' '>'
-zs             ::= '\\zs'
-ze             ::= '\\ze'
-bof            ::= '<%=magic(false, true, true, true)%>' '%\^'
-eof            ::= '<%=magic(false, true, true, true)%>' '%\$'
-visual         ::= '<%=magic(false, true, true, true)%>' '%V'
-cursor         ::= '<%=magic(false, true, true, true)%>' '%#'
-mark           ::= '<%=magic(false, true, true, true)%>' '%''' '[[:alnum:]<>[\]''"^.(){}]'    -> #mark
-line           ::= '<%=magic(false, true, true, true)%>' '%' number 'l'                       -> #mark
-column         ::= '<%=magic(false, true, true, true)%>' '%' number 'c'                       -> #mark
-virtual_column ::= '<%=magic(false, true, true, true)%>' '%' number 'v'                       -> #mark
+bol             ::= '<%=magic(false, false, false, true)%>' '\^'                                 -> #bol
+bol_any         ::= '\\_\^'
+eol             ::= & ( '<%=magic(false, false, false, true)%>'  '\$\%(\\)\)*\%(\\&\|\\|\|$\)' ) '<%=magic(false, false, false, true)%>' '\$' -> #eol
+eol_any         ::= '\\_\$'
+bow             ::= '<%=magic(false, true, true, true)%>' '<'
+eow             ::= '<%=magic(false, true, true, true)%>' '>'
+zs              ::= '\\zs'
+ze              ::= '\\ze'
+bof             ::= '<%=magic(false, true, true, true)%>' '%\^'
+eof             ::= '<%=magic(false, true, true, true)%>' '%\$'
+visual          ::= '<%=magic(false, true, true, true)%>' '%V'
+cursor          ::= '<%=magic(false, true, true, true)%>' '%#'
+mark            ::= '<%=magic(false, true, true, true)%>' '%''' '[[:alnum:]<>[\]''"^.(){}]'    -> #mark
+line            ::= '<%=magic(false, true, true, true)%>' '%' number 'l'                       -> #mark
+column          ::= '<%=magic(false, true, true, true)%>' '%' number 'c'                       -> #mark
+virtual_column  ::= '<%=magic(false, true, true, true)%>' '%' number 'v'                       -> #mark
+; Numeric representations
+char_code       ::= decimal_char | octal_char | hex_char_low | hex_char_medium | hex_char_high | err11
+decimal_char    ::= '\\%d' '\d\+' -> #decimal_char
+octal_char      ::= '\\%o' '[0-7]\{1,4}' -> #decimal_char
+hex_char_low    ::= '\\%x' '[0-9a-f]\{1,2}' -> #decimal_char
+hex_char_medium ::= '\\%u' '[0-9a-f]\{1,4}' -> #decimal_char
+hex_char_high   ::= '\\%U' '[0-9a-f]\{1,8}' -> #decimal_char
 ; Collection {{{2
 collection       ::= start_collection caret ? coll_inner end_collection -> #collection
-coll_inner       ::= ']' ( range | decimal_char | octal_char | hex_char_low | hex_char_medium | hex_char_high | bracket_class | equivalence | collation | !']' coll_char ) * | ( range | decimal_char | octal_char | hex_char_low | hex_char_medium | hex_char_high | bracket_class | equivalence | collation | !']' coll_char ) + -> #coll_inner; {{{3
+coll_inner       ::= ']' ( range | coll_decimal_char | coll_octal_char | coll_hex_char_low | coll_hex_char_medium | coll_hex_char_high | bracket_class | equivalence | collation | !']' coll_char ) * | ( range | coll_decimal_char | coll_octal_char | coll_hex_char_low | coll_hex_char_medium | coll_hex_char_high | bracket_class | equivalence | collation | !']' coll_char ) + -> #coll_inner; {{{3
 start_collection ::= coll_nl_or_start | coll_start       -> #start_collection
 end_collection   ::= '\]'               -> #end_collection
 coll_start       ::= '<%=magic(false, false, true, true)%>' '\['              -> #coll_start
 coll_nl_or_start ::= '\\_['              -> #coll_nl_or_start
 caret            ::= '\^'               -> #caret
 range            ::= range_char '-' range_char      -> #range
-range_char       ::= decimal_char | octal_char | hex_char_low | hex_char_medium | hex_char_high | coll_char
-decimal_char     ::= '\\d' '\d\+' -> #decimal_char
-octal_char       ::= '\\o' '[0-7]\{1,4}' -> #decimal_char
-hex_char_low     ::= '\\x' '[0-9a-f]\{1,2}' -> #decimal_char
-hex_char_medium  ::= '\\u' '[0-9a-f]\{1,4}' -> #decimal_char
-hex_char_high    ::= '\\U' '[0-9a-f]\{1,8}' -> #decimal_char
+range_char       ::= coll_decimal_char | coll_octal_char | coll_hex_char_low | coll_hex_char_medium | coll_hex_char_high | coll_char
+coll_decimal_char     ::= '\\d' '\d\+' -> #coll_decimal_char
+coll_octal_char       ::= '\\o' '[0-7]\{1,4}' -> #coll_decimal_char
+coll_hex_char_low     ::= '\\x' '[0-9a-f]\{1,2}' -> #coll_decimal_char
+coll_hex_char_medium  ::= '\\u' '[0-9a-f]\{1,4}' -> #coll_decimal_char
+coll_hex_char_high    ::= '\\U' '[0-9a-f]\{1,8}' -> #coll_decimal_char
 ; Bracket character classes {{{2
 bracket_class       ::= '\[:' ( bc_alpha | bc_alnum | bc_blank | bc_cntrl | bc_digit | bc_graph | bc_lower | bc_print | bc_punct | bc_space | bc_upper | bc_xdigit | bc_return | bc_tab | bc_escape | bc_backspace ) ':\]' -> #bracket_class
 ; Bracket items {{{3
@@ -233,3 +220,26 @@ escape       ::= '\\'
 bore         ::= '\_^'
 ; End of regular expression {{{2
 eore    ::= '\_$'
+; Errors {{{2
+; Unmatched (
+err1    ::= ( open_capture_group | open_non_capture_group ) pattern ? -> #err1
+; Unmatched ) TODO
+err2    ::= '<%=magic(false, true, true, true)%>' ')' -> #err2
+; nested quantifiers
+err3    ::= multi multi + -> #err3
+; Invalid character after @
+err4 ::= '<%=magic(false, true, true, true)%>' '@\%([^<]\|<[^=!]\)' -> #err4
+; Invalid character after %
+err5 ::= '<%=magic(false, true, true, true)%>' '%\([^0-9([dxouU''<>]\|\d\+[^lcv]\)' -> #err5
+; Syntax error in {...}
+err6 ::= start_curly '[^}]' + end_curly -> #err6
+; Invalid use of \_
+err7 ::= '\\_.' -> #err7
+; Missing ] after %[
+err8 ::= start_sequence ( collection | seq_char ) + eore -> #err8
+; Empty %[]
+err9 ::= start_sequence end_sequence -> #err9
+; Invalid item in %[]
+err10 ::= '<%=magic(false, true, true, true)%>' ( '%\?(' | ')' | '&' | '|' ) -> #err10
+; Invalid character after %[dxouU]
+err11 ::= '\\%d0*\d\{9,}' | '\\%o[89]\+' | '\\%[uUx][^0-9a-fA-F]' -> #err11
