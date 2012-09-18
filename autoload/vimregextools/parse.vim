@@ -26,10 +26,11 @@ function! vimregextools#parse#match(re, ...) "{{{1
   let s:eol_level = 0
   call s:Debug('/' . escape(a:re, '/') . '/')
   let s:magic = matchstr(matchstr(a:re, '\C\m^\%(\\[vVmMZcC]\)*'), '\C\m\\[vVmM]')
+  let s:magic = empty(s:magic) ? '\m' : s:magic
   let save_mfd = &maxfuncdepth
   set maxfuncdepth=1000
   try
-    if empty(s:magic) || s:magic ==# '\m'
+    if s:magic ==# '\m'
       let result = g:vimregextools#parser_magic#now.match(a:re)
     elseif s:magic ==# '\M'
       let result = g:vimregextools#parser_non_magic#now.match(a:re)
@@ -39,13 +40,12 @@ function! vimregextools#parse#match(re, ...) "{{{1
       let result = g:vimregextools#parser_very_non_magic#now.match(a:re)
     endif
   catch /^VRET/
-    let result = {'value': v:exception }
+    let result = {'value': {'error': v:exception }}
   endtry
-  let result.magic = s:magic
-  let result.case  = s:ignore_case
-  let result.comp  = s:ignore_composing
+  let result.value.magic = s:magic[1]
+  let result.value.case  = s:ignore_case
+  let result.value.comp  = s:ignore_composing
   let &maxfuncdepth = save_mfd
-  let g:output = 1
   return result
 endfunction "Parse
 
