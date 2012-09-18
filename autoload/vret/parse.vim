@@ -40,8 +40,11 @@ function! vret#parse#match(re, ...) "{{{1
       let result = g:vret#parser_very_non_magic#now.match(a:re)
     endif
   catch /^VRET/
-    let result = {'value': {'error': v:exception }}
+    let result = {'value': {'o': 'error', 'v': [v:exception] }}
   endtry
+  if empty(result.value)
+    let result.value = {'o': 'error', 'v': [v:exception] }
+  endif
   let result.value.magic = s:magic
   let result.value.case  = s:ignore_case
   let result.value.comp  = s:ignore_composing
@@ -435,7 +438,7 @@ endfunction "vret#parser#nl_or_any
 "bol() {{{1
 function! vret#parse#bol(elems) abort
   " bol ::= '\^' -> #bol
-  call s:Debug(2, a:elems)
+  call s:Debug(a:elems, 2)
   let result = {'o': '^', 'v':[]}
   let result.bol = !get(s:bol_stack, -1, 0)
   call s:Debug(result)
