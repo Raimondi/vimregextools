@@ -40,8 +40,8 @@ function! vimregextools#parse#match(re, ...) "{{{1
     let result = g:vimregextools#parser_very_non_magic#now.match(a:re)
   endif
   let result.magic = s:magic
-  let result.case = s:ignore_case
-  let result.comp = s:ignore_composing
+  let result.case  = s:ignore_case
+  let result.comp  = s:ignore_composing
   "redir END
   let &maxfuncdepth = save_mfd
   let g:output = 1
@@ -534,7 +534,7 @@ endfunction "vimregextools#parser#ordinary_atom
 "any() {{{1
 function! vimregextools#parse#any(elems) abort
   " any ::= '\.' -> #any
-  let result = '.'
+  let result = {'o': '.', 'v': []}
   call s:Debug(result)
   return result
 endfunction "vimregextools#parser#any
@@ -542,7 +542,7 @@ endfunction "vimregextools#parser#any
 "nl_or_any() {{{1
 function! vimregextools#parse#nl_or_any(elems) abort
   " nl_or_any ::= '\\_\.' -> #nl_or_any
-  let result = {'o': '\|', 'v': ['.', '\n']}
+  let result = {'o': '\_.', 'v': []}
   call s:Debug(result)
   return result
 endfunction "vimregextools#parser#nl_or_any
@@ -550,11 +550,9 @@ endfunction "vimregextools#parser#nl_or_any
 "bol() {{{1
 function! vimregextools#parse#bol(elems) abort
   " bol ::= '\^' -> #bol
-  if get(s:bol_stack, -1, 0)
-    let result = '\^'
-  else
-    let result = '\_^'
-  endif
+  call s:Debug(2, a:elems)
+  let result = {'o': '^', 'v':[]}
+  let result.bol = !get(s:bol_stack, -1, 0)
   call s:Debug(result)
   return result
 endfunction "vimregextools#parser#bol
@@ -562,7 +560,7 @@ endfunction "vimregextools#parser#bol
 "eol() {{{1
 function! vimregextools#parse#eol(elems) abort
   " bol ::= & '\$\%(\\)\)*\%(\\&\|\\|\|$\)' '\$' -> #eol
-  let result = '\_$'
+  let result = {'o': '$', 'v': [], 'eol': 1}
   let s:eol_level = s:indent_level
   call s:Debug(result)
   return result
@@ -589,12 +587,9 @@ endfunction "vimregextools#parser#decimal_char
 "char_class() {{{1
 function! vimregextools#parse#char_class(elems) abort
   " char_class ::= identifier | identifier_no_digits | keyword | non_keyword | file_name | file_name_no_digits | printable | printable_no_digits | whitespace | non_whitespace | digit | non_digit | hex_digit | non_hex_digit | octal_digit | non_octal_digit | word | non_word | head | non_head | alpha | non_alpha | lowercase | non_lowercase | uppercase | non_uppercase | nl_or_identifier | nl_or_identifier_no_digits | nl_or_keyword | nl_or_non_keyword | nl_or_file_name | nl_or_file_name_no_digits | nl_or_printable | nl_or_printable_no_digits | nl_or_whitespace | nl_or_non_whitespace | nl_or_digit | nl_or_non_digit | nl_or_hex_digit | nl_or_non_hex_digit | nl_or_octal_digit | nl_or_non_octal_digit | nl_or_word | nl_or_non_word | nl_or_head | nl_or_non_head | nl_or_alpha | nl_or_non_alpha | nl_or_lowercase | nl_or_non_lowercase | nl_or_uppercase | nl_or_non_uppercase -> #char_class
-  call s:Debug(a:elems)
-  if match(a:elems, '_') == -1
-    let result = a:elems
-  else
-    let result = {'o': '\|', 'v': [substitute(a:elems, '_', '', ''), '\n']}
-  endif
+  call s:Debug(2, a:elems)
+  let result = {'o': substitute(a:elems, '_', '', ''), 'v': []}
+  let result.nl = match(a:elems, '_') > -1
   call s:Debug(result)
   return result
 endfunction "vimregextools#parser#char_class
@@ -746,7 +741,7 @@ function! vimregextools#parse#char(elems) abort
     "let result = (a:elems[1] =~ '[@%\[\]()<>+=?]' ? '' : '\') . a:elems[1]
     let result = (a:elems[1] =~ '[*.~]' ? '\' : '') . a:elems[1]
   elseif type(a:elems) == type('') && a:elems == '$'
-    let result = '\' . a:elems
+    let result = {'o': '$', 'v': [], 'eol': 0}
   else
     let result = a:elems
   endif
