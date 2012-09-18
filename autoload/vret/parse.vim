@@ -31,18 +31,18 @@ function! vret#parse#match(re, ...) "{{{1
   set maxfuncdepth=1000
   try
     if s:magic ==# '\m'
-      let result = g:vimregextools#parser_magic#now.match(a:re)
+      let result = g:vret#parser_magic#now.match(a:re)
     elseif s:magic ==# '\M'
-      let result = g:vimregextools#parser_non_magic#now.match(a:re)
+      let result = g:vret#parser_non_magic#now.match(a:re)
     elseif s:magic ==# '\v'
-      let result = g:vimregextools#parser_very_magic#now.match(a:re)
+      let result = g:vret#parser_very_magic#now.match(a:re)
     elseif s:magic ==# '\V'
-      let result = g:vimregextools#parser_very_non_magic#now.match(a:re)
+      let result = g:vret#parser_very_non_magic#now.match(a:re)
     endif
   catch /^VRET/
     let result = {'value': {'error': v:exception }}
   endtry
-  let result.value.magic = s:magic[1]
+  let result.value.magic = s:magic
   let result.value.case  = s:ignore_case
   let result.value.comp  = s:ignore_composing
   let &maxfuncdepth = save_mfd
