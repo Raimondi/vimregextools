@@ -258,122 +258,6 @@ function! vimregextools#parse#atom(elems) abort
   return result
 endfunction "vimregextools#parser#atom
 
-"err1() {{{1
-function! vimregextools#parse#err1(elems) abort
-  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
-  call s:Debug(a:elems, 2)
-  let result = a:elems
-  call s:Debug(result)
-  call s:error(1, 'unmatched (')
-  return result
-endfunction "vimregextools#parser#err1
-
-"err2() {{{1
-function! vimregextools#parse#err2(elems) abort
-  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
-  call s:Debug(a:elems, 2)
-  let result = a:elems
-  call s:Debug(result)
-  call s:error(2, 'unmatched )')
-  return result
-endfunction "vimregextools#parser#err2
-
-"err3() {{{1
-function! vimregextools#parse#err3(elems) abort
-  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
-  call s:Debug(a:elems, 2)
-  let result = a:elems
-  call s:Debug(result)
-  if type(a:elems[0]) != type({})
-    let s = a:elems[0]
-  else
-    let s = a:elems[0].o . '}'
-  endif
-  let s .= join(map(a:elems[1], 'type(v:val) == type({}) ? v:val.o . "}" : v:val'), '')
-  call s:error(3, 'nested quantifiers: ' . s)
-  return result
-endfunction "vimregextools#parser#err3
-
-"err4() {{{1
-function! vimregextools#parse#err4(elems) abort
-  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
-  call s:Debug(a:elems, 2)
-  let result = a:elems
-  call s:Debug(result)
-  call s:error(4, 'invalid character after @')
-  return result
-endfunction "vimregextools#parser#err4
-
-"err5() {{{1
-function! vimregextools#parse#err5(elems) abort
-  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
-  call s:Debug(a:elems, 2)
-  let result = a:elems
-  call s:Debug(result)
-  call s:error(5, 'invalid character after %')
-  return result
-endfunction "vimregextools#parser#err5
-
-"err6() {{{1
-function! vimregextools#parse#err6(elems) abort
-  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
-  call s:Debug(a:elems, 2)
-  let result = a:elems
-  call s:Debug(result)
-  call s:error(6, 'syntax error in {...}')
-  return result
-endfunction "vimregextools#parser#err6
-
-"err7() {{{1
-function! vimregextools#parse#err7(elems) abort
-  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
-  call s:Debug(a:elems, 2)
-  let result = a:elems
-  call s:Debug(result)
-  call s:error(7, 'invalid use of \_')
-  return result
-endfunction "vimregextools#parser#err7
-
-"err8() {{{1
-function! vimregextools#parse#err8(elems) abort
-  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
-  call s:Debug(a:elems, 2)
-  let result = a:elems
-  call s:Debug(result)
-  call s:error(8, 'missing ] after %[')
-  return result
-endfunction "vimregextools#parser#err8
-
-"err9() {{{1
-function! vimregextools#parse#err9(elems) abort
-  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
-  call s:Debug(a:elems, 2)
-  let result = a:elems
-  call s:Debug(result)
-  call s:error(9, 'empty %[]')
-  return result
-endfunction "vimregextools#parser#err9
-
-"err10() {{{1
-function! vimregextools#parse#err10(elems) abort
-  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
-  call s:Debug(a:elems, 2)
-  let result = a:elems
-  call s:Debug(result)
-  call s:error(10, 'invalid item in %[]')
-  return result
-endfunction "vimregextools#parser#err10
-
-"err11() {{{1
-function! vimregextools#parse#err11(elems) abort
-  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
-  call s:Debug(a:elems, 2)
-  let result = a:elems
-  call s:Debug(result)
-  call s:error(11, 'invalid character after %[dxouU]')
-  return result
-endfunction "vimregextools#parser#err11
-
 "flag() {{{1
 function! vimregextools#parse#flag(elems) abort
   " flag    ::= case_flag | magic_flag | ignore_comb_chars -> #flag
@@ -749,6 +633,122 @@ function! vimregextools#parse#char(elems) abort
   call s:Debug(result)
   return result
 endfunction "vimregextools#parser#char
+
+"err1() {{{1
+function! vimregextools#parse#err1(elems) abort
+  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
+  call s:Debug(a:elems, 2)
+  let result = a:elems
+  call s:Debug(result)
+  call s:error(1, 'unmatched (')
+  return result
+endfunction "vimregextools#parser#err1
+
+"err2() {{{1
+function! vimregextools#parse#err2(elems) abort
+  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
+  call s:Debug(a:elems, 2)
+  let result = a:elems
+  call s:Debug(result)
+  call s:error(2, 'unmatched )')
+  return result
+endfunction "vimregextools#parser#err2
+
+"err3() {{{1
+function! vimregextools#parse#err3(elems) abort
+  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
+  call s:Debug(a:elems, 2)
+  let result = a:elems
+  call s:Debug(result)
+  if type(a:elems[0]) != type({})
+    let s = a:elems[0]
+  else
+    let s = a:elems[0].o . '}'
+  endif
+  let s .= join(map(a:elems[1], 'type(v:val) == type({}) ? v:val.o . "}" : v:val'), '')
+  call s:error(3, 'nested quantifiers: ' . s)
+  return result
+endfunction "vimregextools#parser#err3
+
+"err4() {{{1
+function! vimregextools#parse#err4(elems) abort
+  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
+  call s:Debug(a:elems, 2)
+  let result = a:elems
+  call s:Debug(result)
+  call s:error(4, 'invalid character after @')
+  return result
+endfunction "vimregextools#parser#err4
+
+"err5() {{{1
+function! vimregextools#parse#err5(elems) abort
+  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
+  call s:Debug(a:elems, 2)
+  let result = a:elems
+  call s:Debug(result)
+  call s:error(5, 'invalid character after %')
+  return result
+endfunction "vimregextools#parser#err5
+
+"err6() {{{1
+function! vimregextools#parse#err6(elems) abort
+  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
+  call s:Debug(a:elems, 2)
+  let result = a:elems
+  call s:Debug(result)
+  call s:error(6, 'syntax error in {...}')
+  return result
+endfunction "vimregextools#parser#err6
+
+"err7() {{{1
+function! vimregextools#parse#err7(elems) abort
+  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
+  call s:Debug(a:elems, 2)
+  let result = a:elems
+  call s:Debug(result)
+  call s:error(7, 'invalid use of \_')
+  return result
+endfunction "vimregextools#parser#err7
+
+"err8() {{{1
+function! vimregextools#parse#err8(elems) abort
+  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
+  call s:Debug(a:elems, 2)
+  let result = a:elems
+  call s:Debug(result)
+  call s:error(8, 'missing ] after %[')
+  return result
+endfunction "vimregextools#parser#err8
+
+"err9() {{{1
+function! vimregextools#parse#err9(elems) abort
+  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
+  call s:Debug(a:elems, 2)
+  let result = a:elems
+  call s:Debug(result)
+  call s:error(9, 'empty %[]')
+  return result
+endfunction "vimregextools#parser#err9
+
+"err10() {{{1
+function! vimregextools#parse#err10(elems) abort
+  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
+  call s:Debug(a:elems, 2)
+  let result = a:elems
+  call s:Debug(result)
+  call s:error(10, 'invalid item in %[]')
+  return result
+endfunction "vimregextools#parser#err10
+
+"err11() {{{1
+function! vimregextools#parse#err11(elems) abort
+  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
+  call s:Debug(a:elems, 2)
+  let result = a:elems
+  call s:Debug(result)
+  call s:error(11, 'invalid character after %[dxouU]')
+  return result
+endfunction "vimregextools#parser#err11
 
 " Playground {{{1
 "2RE a\|b
