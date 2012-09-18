@@ -17,7 +17,7 @@ for test in tests
         \ "^\\(.\\{-}\\) \\('\\%(''\\|[^']\\)*'\\) \\([01]\\)$")
   " Run test:
   try
-    silent let result = vimregextools#parse#match(re)
+    silent let result = vret#parse#match(re)
   catch
     if !exists('result')
       let result = {}

@@ -2,8 +2,8 @@
 
 ; Parser options {{{1
 .skip_white   = false
-.namespace    = 'vimregextools#parse'
-.parser_name  = 'vimregextools#parser_<%=$magic.to_s%>#now'
+.namespace    = 'vret#parse'
+.parser_name  = 'vret#parser_<%=$magic.to_s%>#now'
 .root_element = 'regexp'
 .ignore_case  = false
 .debug        = true
