@@ -36,7 +36,7 @@ for t in list
   if has_key(t, 'diag')
     call vimtap#Diag(t.diag)
   endif
-  if !vimtap#Skip(1, !empty(t.result), '"result" was not defined.')
+  if !vimtap#Skip(1, !empty(t.result), 'Parsing: "result" was not defined: ' . escape(string(t), '\'))
     " Did it parse the re?
     let msg = '/' . escape(t.re, '/') . '/ should '
           \ . (t.match ? '' : 'not ') . 'be parsed.'
@@ -48,7 +48,7 @@ for t in list
   if has_key(t, 'diag')
     call vimtap#Diag(t.diag)
   endif
-  if !vimtap#Skip(1, !empty(t.result), '"result" was not defined.')
+  if !vimtap#Skip(1, !empty(t.result), 'Output: "result" was not defined: ' . escape(string(t), '\'))
     " Did it parse it as expected?
     let msg = 'Result of /' . escape(t.re, '/') . '/'
     call vimtap#Is(string(t.result.value), eval(t.expected), msg)
