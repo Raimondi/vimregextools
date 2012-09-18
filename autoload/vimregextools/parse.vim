@@ -30,15 +30,19 @@ function! vimregextools#parse#match(re, ...) "{{{1
   let save_mfd = &maxfuncdepth
   set maxfuncdepth=1000
   "redir => g:log
-  if empty(s:magic) || s:magic ==# '\m'
-    let result = g:vimregextools#parser_magic#now.match(a:re)
-  elseif s:magic ==# '\M'
-    let result = g:vimregextools#parser_non_magic#now.match(a:re)
-  elseif s:magic ==# '\v'
-    let result = g:vimregextools#parser_very_magic#now.match(a:re)
-  elseif s:magic ==# '\V'
-    let result = g:vimregextools#parser_very_non_magic#now.match(a:re)
-  endif
+  try
+    if empty(s:magic) || s:magic ==# '\m'
+      let result = g:vimregextools#parser_magic#now.match(a:re)
+    elseif s:magic ==# '\M'
+      let result = g:vimregextools#parser_non_magic#now.match(a:re)
+    elseif s:magic ==# '\v'
+      let result = g:vimregextools#parser_very_magic#now.match(a:re)
+    elseif s:magic ==# '\V'
+      let result = g:vimregextools#parser_very_non_magic#now.match(a:re)
+    endif
+  catch /^VRET/
+    let result = {'value': v:exception }
+  endtry
   let result.magic = s:magic
   let result.case  = s:ignore_case
   let result.comp  = s:ignore_composing
