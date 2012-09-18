@@ -1,6 +1,6 @@
 unlet! s:indent_level s:capture_level s:bol_stack
 " TODO: nr2char() for number representations.
-command! -nargs=+ -count RE echo vimregextools#parse#match(<q-args>, <count>).value
+command! -nargs=+ -count VRET echo vimregextools#parse#match(<q-args>, <count>).value
 " Remove all our functions {{{1
 "let s:more = &more
 "set nomore
