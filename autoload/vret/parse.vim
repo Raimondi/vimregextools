@@ -43,7 +43,7 @@ function! vret#parse#match(re, ...) "{{{1
     let result = {'value': {'o': 'error', 'v': [v:exception] }}
   endtry
   if empty(result.value)
-    let result.value = {'o': 'error', 'v': [v:exception] }
+    let result.value = {'o': 'error', 'v': [] }
   endif
   let result.value.magic = s:magic
   let result.value.case  = s:ignore_case
@@ -261,10 +261,31 @@ function! vret#parse#atom(elems) abort
   return result
 endfunction "vret#parser#atom
 
+"legal_flag() {{{1
+function! vret#parse#legal_flag(elems) abort
+  " legal_flag    ::= case_flag | magic_flag | ignore_comb_chars -> #legal_flag
+  call s:Debug(a:elems, 2)
+  " Flags at the beginning only.
+  if a:elems ==# '\C'
+    let s:ignore_case = 0
+  elseif a:elems ==# '\c'
+    let s:ignore_case = 1
+  elseif a:elems ==# '\Z'
+    let s:ignore_composing = 1
+  else
+    let s:magic = a:elems
+  endif
+  let result = a:elems
+  call s:Debug(result)
+  return result
+endfunction "vret#parser#legal_flag
+
 "flag() {{{1
 function! vret#parse#flag(elems) abort
   " flag    ::= case_flag | magic_flag | ignore_comb_chars -> #flag
   call s:Debug(a:elems, 2)
+  " Flags at the beginning only.
+  call s:error(12, 'flags must be at the begining.')
   if a:elems ==# '\C'
     let s:ignore_case = 0
     let result = []
@@ -627,7 +648,8 @@ function! vret#parse#char(elems) abort
   " Use only the second char of non special escaped sequences.
   if type(a:elems) == type([])
     "let result = (a:elems[1] =~ '[@%\[\]()<>+=?]' ? '' : '\') . a:elems[1]
-    let result = (a:elems[1] =~ '[*.~]' ? '\' : '') . a:elems[1]
+    "let result = (a:elems[1] =~ '[*.~]' ? '\' : '') . a:elems[1]
+    let result = join(a:elems, '')
   elseif type(a:elems) == type('') && a:elems == '$'
     let result = {'o': '$', 'v': [], 'eol': 0}
   else
