@@ -125,18 +125,31 @@ endfunction "vret#parser#regexp
 function! vret#parse#pattern(elems) abort
   " pattern ::= branch ( or branch ) * -> #pattern
   call s:Debug(a:elems, 2)
-  if empty(a:elems[1])
+  if get(a:elems[0], 0, '') =~ '\\\?|'
+    let list = ['']
+    for i in a:elems
+      let item = get(i[1], 0, '')
+      if type(item) == type([]) && len(item) == 1
+        " A list with a single item.
+        call extend(list, item)
+      else
+        call add(list, item)
+      endif
+    endfor
+    let result = {'o': '\|', 'v': list}
+  elseif empty(a:elems[1])
     " Only one element.
     let result = a:elems[0]
   else
     let list = type(a:elems[0]) == type([]) && len(a:elems[0]) == 1
           \ ? a:elems[0] : [a:elems[0]]
     for i in a:elems[1]
-      if type(i[1]) == type([]) && len(i[1]) == 1
+      let item = get(i[1], 0, '')
+      if type(item) == type([]) && len(item) == 1
         " A list with a single item.
-        call extend(list, i[1])
+        call extend(list, item)
       else
-        call add(list, i[1])
+        call add(list, item)
       endif
     endfor
     let result = {'o': '\|', 'v': list}
