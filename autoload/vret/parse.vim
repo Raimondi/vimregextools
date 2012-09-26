@@ -167,31 +167,33 @@ endfunction "vret#parser#or
 
 "branch() {{{1
 function! vret#parse#branch(elems) abort
-  " branch ::= concat ( and concat ) * -> #branch
-  "['a', []]
-  "['a', [['|', 'b']]]
-  "['a', [['|', 'b'], ['|', 'c']]]
-  "['a', [['|', 'b'], ['|', 'c'], ['|', 'd']]]
+  " branch  ::= concat ( and concat ? ) * | ( and concat ? ) + -> #branch
   call s:Debug(a:elems, 2)
-  call s:Debug(a:elems, 2)
-  if empty(a:elems[1])
-    "['a', []]
+  let empty_and = get(a:elems[0], 0, '') =~ '\\\?&'
+  if !empty_and && empty(a:elems[1])
+    " Only one element.
     let result = a:elems[0]
-  else
-    "'[^|]' ( '|' '[^|]' ) *
-    "['a', [['|', 'b']]]
-    "['a', [['|', 'b'], ['|', 'c']]]
-    "['a', [['|', 'b'], ['|', 'c'], ['|', 'd']]]
-    let list = a:elems[0]
-    for i in a:elems[1]
-      if type(i[1]) == type([]) && len(i[1]) == 1
-        call extend(list, i[1])
-      else
-        call add(list, i[1])
-      endif
-    endfor
-    let result = {'o': '\&', 'v': list}
+    call s:Debug(result)
+    return result
   endif
+  if empty_and
+    let elems = a:elems
+    let list = ['']
+  else
+    let elems = a:elems[1]
+    let list = type(a:elems[0]) == type([]) && len(a:elems[0]) == 1
+          \ ? a:elems[0] : [a:elems[0]]
+  endif
+  for i in elems
+    let item = get(i[1], 0, '')
+    if type(item) == type([]) && len(item) == 1
+      " A list with a single item.
+      call extend(list, item)
+    else
+      call add(list, item)
+    endif
+  endfor
+  let result = {'o': '\&', 'v': list}
   call s:Debug(result)
   return result
 endfunction "vret#parser#branch

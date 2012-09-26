@@ -13,7 +13,7 @@
 regexp  ::= legal_flag * pattern ? escape ? eore                                 -> #regexp
 pattern ::= branch ( or branch ? ) *  | ( or branch ?) +                         -> #pattern
 or      ::= '<%=magic('', '\\', '\\', '\\')%>' '|'                                                                -> #or
-branch  ::= concat ( and concat ) *                                              -> #branch
+branch  ::= concat ( and concat ? ) * | ( and concat ? ) +                       -> #branch
 and     ::= '<%=magic('', '\\', '\\', '\\')%>' '&'                                                                -> #and
 concat  ::= piece +                                                              -> #concat
 piece   ::= atom ( err3 | multi ) ? flag *                                                  -> #piece
