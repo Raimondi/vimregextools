@@ -123,37 +123,33 @@ endfunction "vret#parser#regexp
 
 "pattern() {{{1
 function! vret#parse#pattern(elems) abort
-  " pattern ::= branch ( or branch ) * -> #pattern
+  " pattern ::= branch ( or branch ? ) *  | ( or branch ?) + -> #pattern
   call s:Debug(a:elems, 2)
-  if get(a:elems[0], 0, '') =~ '\\\?|'
-    let list = ['']
-    for i in a:elems
-      let item = get(i[1], 0, '')
-      if type(item) == type([]) && len(item) == 1
-        " A list with a single item.
-        call extend(list, item)
-      else
-        call add(list, item)
-      endif
-    endfor
-    let result = {'o': '\|', 'v': list}
-  elseif empty(a:elems[1])
+  let empty_or = get(a:elems[0], 0, '') =~ '\\\?|'
+  if !empty_or && empty(a:elems[1])
     " Only one element.
     let result = a:elems[0]
+    call s:Debug(result)
+    return result
+  endif
+  if empty_or
+    let elems = a:elems
+    let list = ['']
   else
+    let elems = a:elems[1]
     let list = type(a:elems[0]) == type([]) && len(a:elems[0]) == 1
           \ ? a:elems[0] : [a:elems[0]]
-    for i in a:elems[1]
-      let item = get(i[1], 0, '')
-      if type(item) == type([]) && len(item) == 1
-        " A list with a single item.
-        call extend(list, item)
-      else
-        call add(list, item)
-      endif
-    endfor
-    let result = {'o': '\|', 'v': list}
   endif
+  for i in elems
+    let item = get(i[1], 0, '')
+    if type(item) == type([]) && len(item) == 1
+      " A list with a single item.
+      call extend(list, item)
+    else
+      call add(list, item)
+    endif
+  endfor
+  let result = {'o': '\|', 'v': list}
   call s:Debug(result)
   return result
 endfunction "vret#parser#pattern
