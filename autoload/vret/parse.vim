@@ -786,5 +786,15 @@ function! vret#parse#err11(elems) abort
   return result
 endfunction "vret#parser#err11
 
+"err12() {{{1
+function! vret#parse#err12(elems) abort
+  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
+  call s:Debug(a:elems, 2)
+  let result = a:elems
+  call s:Debug(result)
+  call s:error(12, 'invalid mark')
+  return result
+endfunction "vret#parser#err12
+
 " Playground {{{1
 "2RE a\|b

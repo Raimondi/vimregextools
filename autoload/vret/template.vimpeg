@@ -77,7 +77,7 @@ bof             ::= '<%=magic('', '\\', '\\', '\\')%>' '%\^'
 eof             ::= '<%=magic('', '\\', '\\', '\\')%>' '%\$'
 visual          ::= '<%=magic('', '\\', '\\', '\\')%>' '%V'
 cursor          ::= '<%=magic('', '\\', '\\', '\\')%>' '%#'
-mark            ::= '<%=magic('', '\\', '\\', '\\')%>' '%''' '[[:alnum:]<>[\]''"^.(){}]'    -> #mark
+mark            ::= '<%=magic('', '\\', '\\', '\\')%>' '%''' '[[:alnum:]<>[\]''"^.(){}]' | err12 -> #mark
 line            ::= '<%=magic('', '\\', '\\', '\\')%>' '%' number 'l'                       -> #mark
 column          ::= '<%=magic('', '\\', '\\', '\\')%>' '%' number 'c'                       -> #mark
 virtual_column  ::= '<%=magic('', '\\', '\\', '\\')%>' '%' number 'v'                       -> #mark
@@ -243,3 +243,5 @@ err9 ::= start_sequence end_sequence -> #err9
 err10 ::= '<%=magic('', '\\', '\\', '\\')%>' ( '%\?(' | ')' | '&' | '|' ) -> #err10
 ; Invalid character after %[dxouU]
 err11 ::= '\\%d0*\d\{9,}' | '\\%o[89]\+' | '\\%[uUx][^0-9a-fA-F]' -> #err11
+; Invalid mark
+err12 ::= '<%=magic('', '\\', '\\', '\\')%>' '%''' '.' -> #err12
