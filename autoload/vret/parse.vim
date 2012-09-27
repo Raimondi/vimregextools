@@ -125,7 +125,7 @@ endfunction "vret#parser#regexp
 function! vret#parse#pattern(elems) abort
   " pattern ::= branch ( or branch ? ) *  | ( or branch ?) + -> #pattern
   call s:Debug(a:elems, 2)
-  let empty_or = get(a:elems[0], 0, '') =~ '\\\?|'
+  let empty_or = !type(get(a:elems[0], 0, '')) == type('') && get(a:elems[0], 0, '') =~ '\\\?|'
   if !empty_or && empty(a:elems[1])
     " Only one element.
     let result = a:elems[0]
@@ -169,7 +169,7 @@ endfunction "vret#parser#or
 function! vret#parse#branch(elems) abort
   " branch  ::= concat ( and concat ? ) * | ( and concat ? ) + -> #branch
   call s:Debug(a:elems, 2)
-  let empty_and = get(a:elems[0], 0, '') =~ '\\\?&'
+  let empty_and = !type(get(a:elems[0], 0, '')) == type('') && get(a:elems[0], 0, '') =~ '\\\?&'
   if !empty_and && empty(a:elems[1])
     " Only one element.
     let result = a:elems[0]
