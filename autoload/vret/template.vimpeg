@@ -10,14 +10,14 @@
 .verbose      = 2
 
 ; RegExp syntax {{{1
-regexp  ::= legal_flag * pattern ? escape ? eore                                 -> #regexp
+regexp  ::= legal_flag * err13A ? pattern ? escape ? eore                        -> #regexp
 pattern ::= branch ( or branch ? ) *  | ( or branch ?) +                         -> #pattern
 or      ::= '<%=magic('', '\\', '\\', '\\')%>' '|'                                                                -> #or
 branch  ::= concat ( and concat ? ) * | ( and concat ? ) +                       -> #branch
 and     ::= '<%=magic('', '\\', '\\', '\\')%>' '&'                                                                -> #and
 concat  ::= piece +                                                              -> #concat
 piece   ::= atom ( err3 | multi ) ? flag *                                                  -> #piece
-atom    ::= flag * ( non_capture_group | capture_group | ordinary_atom | err1 )         -> #atom
+atom    ::= flag * ( non_capture_group | capture_group | ordinary_atom | err1 ) | err13B -> #atom
 flag  ::= case_flag | magic_flag | ignore_comb_chars -> #flag
 ; Flags {{{2
 legal_flag              ::= case_flag | magic_flag | ignore_comb_chars -> #legal_flag
@@ -245,3 +245,6 @@ err10 ::= '<%=magic('', '\\', '\\', '\\')%>' ( '%\?(' | ')' | '&' | '|' ) -> #er
 err11 ::= '\\%d0*\d\{9,}' | '\\%o[89]\+' | '\\%[uUx][^0-9a-fA-F]' -> #err11
 ; Invalid mark
 err12 ::= '<%=magic('', '\\', '\\', '\\')%>' '%''' '.' -> #err12
+; Multi follows nothing
+err13A ::= multi -> #err13
+err13B ::= flag + multi -> #err13

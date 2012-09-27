@@ -796,5 +796,15 @@ function! vret#parse#err12(elems) abort
   return result
 endfunction "vret#parser#err12
 
+"err13() {{{1
+function! vret#parse#err13(elems) abort
+  " atom ::= flag * ( non_capture_group | capture_group | ordinary_atom )
+  call s:Debug(a:elems, 2)
+  let result = a:elems
+  call s:Debug(result)
+  call s:error(13, 'multi follows nothing')
+  return result
+endfunction "vret#parser#err13
+
 " Playground {{{1
 "2RE a\|b
