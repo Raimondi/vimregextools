@@ -101,21 +101,21 @@ endfunction
 
 "regexp() {{{1
 function! vret#parse#regexp(elems) abort
-  " regexp ::= legal_flag ? pattern ? escape ? eore -> #regexp
+  " regexp ::= legal_flag * err13A ? pattern ? escape ? eore -> #regexp
   call s:Debug(a:elems, 2)
   let result = {'o': 're', 'v': []}
   if !empty(a:elems[0]) && !empty(a:elems[0][0])
     call extend(result.v, a:elems[0])
   endif
-  if !empty(a:elems[1])
-    if type(a:elems[1][0]) == type([]) && len(a:elems[1]) == 1
-      call extend(result.v, a:elems[1][0])
+  if !empty(a:elems[2])
+    if type(a:elems[2][0]) == type([]) && len(a:elems[2]) == 1
+      call extend(result.v, a:elems[2][0])
     else
-      call add(result.v, a:elems[1][0])
+      call add(result.v, a:elems[2][0])
     endif
   endif
-  if !empty(a:elems[2])
-    call add(result.v, a:elems[2][0])
+  if !empty(a:elems[3])
+    call add(result.v, a:elems[3][0])
   endif
   call s:Debug(result)
   return result
