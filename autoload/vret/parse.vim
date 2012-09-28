@@ -235,7 +235,7 @@ endfunction "vret#parser#concat
 
 "piece() {{{1
 function! vret#parse#piece(elems) abort
-  " piece ::= atom multi ? flag * -> #piece
+  " piece ::= atom ( err3 | multi ) ? flag * -> #piece
   call s:Debug(a:elems, 2)
   if empty(a:elems[1])
     " Just the atom.
@@ -806,5 +806,5 @@ function! vret#parse#err13(elems) abort
   return result
 endfunction "vret#parser#err13
 
-" Playground {{{1
+" Playground {{{
 "2RE a\|b
