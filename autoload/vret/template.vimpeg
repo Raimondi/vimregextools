@@ -95,7 +95,7 @@ start_collection ::= coll_nl_or_start | coll_start       -> #start_collection
 end_collection   ::= '\]'               -> #end_collection
 coll_start       ::= '<%=magic('', '', '\\', '\\')%>' '\['              -> #coll_start
 coll_nl_or_start ::= '\\_['              -> #coll_nl_or_start
-caret            ::= '\^'               -> #caret
+caret            ::= '\^'
 range            ::= range_char '-' range_char      -> #range
 range_char       ::= coll_decimal_char | coll_octal_char | coll_hex_char_low | coll_hex_char_medium | coll_hex_char_high | coll_char
 coll_decimal_char     ::= '\\d' '\d\+' -> #coll_decimal_char

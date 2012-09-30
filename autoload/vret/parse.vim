@@ -588,14 +588,6 @@ function! vret#parse#coll_nl_or_start(elems) abort
   return result
 endfunction "vret#parser#coll_nl_or_start
 
-"caret() {{{1
-function! vret#parse#caret(elems) abort
-  " caret ::= '\^' -> #caret
-  let result = '\'.a:elems
-  call s:Debug(result)
-  return result
-endfunction "vret#parser#caret
-
 "range() {{{1
 function! vret#parse#range(elems) abort
   " range ::= char '-' char -> #range
