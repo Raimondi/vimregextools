@@ -10,7 +10,7 @@
 .verbose      = 2
 
 ; RegExp syntax {{{1
-regexp  ::= legal_flag * err13A ? pattern ? escape ? eore                        -> #regexp
+regexp  ::= legal_flag * err13A ? pattern ? ( escape ? eore | err2 )             -> #regexp
 pattern ::= branch ( or branch ? ) *  | ( or branch ?) +                         -> #pattern
 or      ::= '<%=magic('', '\\', '\\', '\\')%>' '|'                                                                -> #or
 branch  ::= concat ( and concat ? ) * | ( and concat ? ) +                       -> #branch
@@ -223,7 +223,7 @@ eore    ::= '\_$'
 ; Errors {{{2
 ; Unmatched (
 err1    ::= ( open_capture_group | open_non_capture_group ) pattern ? -> #err1
-; Unmatched ) TODO
+; Unmatched )
 err2    ::= '<%=magic('', '\\', '\\', '\\')%>' ')' -> #err2
 ; nested quantifiers
 err3    ::= multi multi + -> #err3

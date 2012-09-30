@@ -114,8 +114,8 @@ function! vret#parse#regexp(elems) abort
       call add(result.v, a:elems[2][0])
     endif
   endif
-  if !empty(a:elems[3])
-    call add(result.v, a:elems[3][0])
+  if !empty(a:elems[3]) && !empty(a:elems[3][0])
+    call add(result.v, a:elems[3][0][0])
   endif
   call s:Debug(result)
   return result
