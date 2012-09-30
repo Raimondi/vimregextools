@@ -495,14 +495,14 @@ function! vret#parse#mark(elems) abort
   return result
 endfunction "vret#parser#mark
 
-"decimal_char() {{{1
-function! vret#parse#decimal_char(elems) abort
-  " range ::= char '-' char -> #decimal_char
+"char_code() {{{1
+function! vret#parse#char_code(elems) abort
+  "char_code    ::= decimal_char | octal_char | hex_char_low | hex_char_medium | hex_char_high | err11 -> #char_code
   call s:Debug(a:elems, 2)
   let result = {'o': '['.a:elems[0], 'v': [a:elems[1]]}
   call s:Debug(result)
   return result
-endfunction "vret#parser#decimal_char
+endfunction "vret#parser#char_code
 
 "char_class() {{{1
 function! vret#parse#char_class(elems) abort

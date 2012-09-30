@@ -82,12 +82,12 @@ line            ::= '<%=magic('', '\\', '\\', '\\')%>' '%' number 'l'           
 column          ::= '<%=magic('', '\\', '\\', '\\')%>' '%' number 'c'                       -> #mark
 virtual_column  ::= '<%=magic('', '\\', '\\', '\\')%>' '%' number 'v'                       -> #mark
 ; Numeric representations
-char_code       ::= decimal_char | octal_char | hex_char_low | hex_char_medium | hex_char_high | err11
-decimal_char    ::= '\\%d' '\d\+'           -> #decimal_char
-octal_char      ::= '\\%o' '[0-7]\{1,4}'    -> #decimal_char
-hex_char_low    ::= '\\%x' '[0-9a-f]\{1,2}' -> #decimal_char
-hex_char_medium ::= '\\%u' '[0-9a-f]\{1,4}' -> #decimal_char
-hex_char_high   ::= '\\%U' '[0-9a-f]\{1,8}' -> #decimal_char
+char_code       ::= decimal_char | octal_char | hex_char_low | hex_char_medium | hex_char_high | err11 -> #char_code
+decimal_char    ::= '<%=magic('', '\\', '\\', '\\')%>' '%d' '\d\+'
+octal_char      ::= '<%=magic('', '\\', '\\', '\\')%>' '%o' '[0-7]\{1,4}'
+hex_char_low    ::= '<%=magic('', '\\', '\\', '\\')%>' '%x' '[0-9a-f]\{1,2}'
+hex_char_medium ::= '<%=magic('', '\\', '\\', '\\')%>' '%u' '[0-9a-f]\{1,4}'
+hex_char_high   ::= '<%=magic('', '\\', '\\', '\\')%>' '%U' '[0-9a-f]\{1,8}'
 ; Collection {{{2
 collection       ::= start_collection caret ? coll_inner end_collection -> #collection
 coll_inner       ::= ']' ( range | coll_decimal_char | coll_octal_char | coll_hex_char_low | coll_hex_char_medium | coll_hex_char_high | bracket_class | equivalence | collation | !']' coll_char ) * | ( range | coll_decimal_char | coll_octal_char | coll_hex_char_low | coll_hex_char_medium | coll_hex_char_high | bracket_class | equivalence | collation | !']' coll_char ) + -> #coll_inner; {{{3
