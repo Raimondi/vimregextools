@@ -40,7 +40,7 @@ function! vret#parse#match(re, ...) "{{{1
       let result = g:vret#parser_very_non_magic#now.match(a:re)
     endif
   catch /^VRET/
-    let result = {'value': {'o': 'error', 'v': [v:exception] }}
+    let result = {'value': {'elem': 'error', 'o': substitute(v:exception, '\C^VRET: E\(\d\+\).*', '\1', ''), 'v': [v:exception] }}
   endtry
   if empty(result.value)
     let result.value = {'o': 'error', 'v': [] }
@@ -101,9 +101,9 @@ endfunction
 
 "regexp() {{{1
 function! vret#parse#regexp(elems) abort
-  " regexp ::= legal_flag * err13A ? pattern ? escape ? eore -> #regexp
+  " regexp ::= legal_flag * err13A ? pattern ? ( escape ? eore | err2 ) -> #regexp
   call s:Debug(a:elems, 2)
-  let result = {'o': 're', 'v': []}
+  let result = {'elem': 're', 'v': []}
   if !empty(a:elems[0]) && !empty(a:elems[0][0])
     call extend(result.v, a:elems[0])
   endif
@@ -149,7 +149,7 @@ function! vret#parse#pattern(elems) abort
       call add(list, item)
     endif
   endfor
-  let result = {'o': '\|', 'v': list}
+  let result = {'elem': 'and', 'o': '\|', 'v': list}
   call s:Debug(result)
   return result
 endfunction "vret#parser#pattern
@@ -193,7 +193,7 @@ function! vret#parse#branch(elems) abort
       call add(list, item)
     endif
   endfor
-  let result = {'o': '\&', 'v': list}
+  let result = {'elem': 'and', 'o': '\&', 'v': list}
   call s:Debug(result)
   return result
 endfunction "vret#parser#branch
@@ -245,7 +245,7 @@ function! vret#parse#piece(elems) abort
     let mediator = extend(a:elems[1][0], {'v':[a:elems[0]]})
   else
     " Atom plus other multi.
-    let mediator = {'o': a:elems[1][0], 'v': [a:elems[0]]}
+    let mediator = {'elem': 'multi', 'o': a:elems[1][0], 'v': [a:elems[0]]}
   endif
   " Add flags, if any.
   if !empty(a:elems[2]) && !empty(a:elems[2][0]) && type(mediator) == type({})
@@ -286,7 +286,7 @@ function! vret#parse#legal_flag(elems) abort
   else
     let s:magic = a:elems
   endif
-  let result = a:elems
+  let result = {'elem': 'flag', 'o': a:elems, 'v': []}
   call s:Debug(result)
   return result
 endfunction "vret#parser#legal_flag
@@ -299,16 +299,14 @@ function! vret#parse#flag(elems) abort
   call s:error(12, 'flags must be at the begining.')
   if a:elems ==# '\C'
     let s:ignore_case = 0
-    let result = []
   elseif a:elems ==# '\c'
     let s:ignore_case = 1
-    let result = []
   elseif a:elems ==# '\Z'
     let s:ignore_composing = 1
-    let result = []
   else
-    let result = a:elems
+    "let result = a:elems
   endif
+  let result = {'elem': 'flag', 'o': a:elems, 'v': []}
   call s:Debug(result)
   return result
 endfunction "vret#parser#flag
@@ -397,7 +395,7 @@ endfunction "vret#parser#close_capture_group
 "multi() {{{1
 function! vret#parse#multi(elems) abort
   " multi ::= quant_star | quant_plus | quant_equal | quant_question | curly | look_around -> #multi
-  call s:Debug(a:elems)
+  call s:Debug(a:elems, 2)
   if type(a:elems) == type([])
     let result = (a:elems[1] =~ '[*]' ? '' : '\') . a:elems[1]
   else
@@ -410,8 +408,8 @@ endfunction "vret#parser#multi
 "curly() {{{1
 function! vret#parse#curly(elems) abort
   " curly ::= start_curly '-' ? lower ? ( ',' upper ? ) ? end_curly -> #curly
-  call s:Debug(a:elems)
-  let result = {'o': '\'.a:elems[0][1]}
+  call s:Debug(a:elems, 2)
+  let result = {'elem': 'multi', 'o': [get(a:elems[0], 0, '').a:elems[0][1], get(a:elems[-1][0], 0, '').a:elems[-1][1]]}
   let list = a:elems[1:-2]
   if empty(list[2])
     call insert(list, '', 3)
@@ -442,7 +440,12 @@ function! vret#parse#ordinary_atom(elems) abort
   " ordinary_atom ::= any | nl_or_any | anchor | char_class | collection | sequence | back_reference | last_substitution | char -> #ordinary_atom
   call s:Debug(a:elems, 2)
   if type(a:elems) == type([])
+    echoerr 'Hello there!'
     let result = (a:elems[1] =~ '^[$^]$' ? '\_' : a:elems[1] =~ '^[.]$' ? '' : '\') . a:elems[1]
+  elseif type(a:elems) == type('') && a:elems == '\_$'
+    let result = {'elem': 'eol_any', 'o': a:elems, 'v': []}
+  elseif type(a:elems) == type('') && a:elems == '\_^'
+    let result = {'elem': 'bol_any', 'o': a:elems, 'v': []}
   else
     let result = a:elems
   endif
@@ -454,7 +457,7 @@ endfunction "vret#parser#ordinary_atom
 "any() {{{1
 function! vret#parse#any(elems) abort
   " any ::= '\.' -> #any
-  let result = {'o': '.', 'v': []}
+  let result = {'elem': 'any', 'o': join(a:elems, ''), 'v': []}
   call s:Debug(result)
   return result
 endfunction "vret#parser#any
@@ -462,7 +465,7 @@ endfunction "vret#parser#any
 "nl_or_any() {{{1
 function! vret#parse#nl_or_any(elems) abort
   " nl_or_any ::= '\\_\.' -> #nl_or_any
-  let result = {'o': '\_.', 'v': []}
+  let result = {'elem': 'nl_or_any', 'o': '\_.', 'v': []}
   call s:Debug(result)
   return result
 endfunction "vret#parser#nl_or_any
@@ -471,7 +474,7 @@ endfunction "vret#parser#nl_or_any
 function! vret#parse#bol(elems) abort
   " bol ::= '\^' -> #bol
   call s:Debug(a:elems, 2)
-  let result = {'o': '^', 'v':[]}
+  let result = {'elem': 'bol_or_^', 'o': join(a:elems, ''), 'v':[]}
   let result.bol = !get(s:bol_stack, -1, 0)
   call s:Debug(result)
   return result
@@ -480,7 +483,8 @@ endfunction "vret#parser#bol
 "eol() {{{1
 function! vret#parse#eol(elems) abort
   " bol ::= & '\$\%(\\)\)*\%(\\&\|\\|\|$\)' '\$' -> #eol
-  let result = {'o': '$', 'v': [], 'eol': 1}
+  call s:Debug(a:elems, 2)
+  let result = {'elem': 'eol_or_$', 'o': join(a:elems[1:], ''), 'v': [], 'eol': 1}
   let s:eol_level = s:indent_level
   call s:Debug(result)
   return result
@@ -490,7 +494,7 @@ endfunction "vret#parser#eol
 function! vret#parse#mark(elems) abort
   " mark ::= '\\%''' '[[:alnum:]<>[\]''"^.(){}]' -> #mark
   call s:Debug(a:elems, 2)
-  let result = {'o': '\'.a:elems[1] . get(a:elems, 3, ''), 'v': [a:elems[2]]}
+  let result = {'elem': 'mark', 'o': join(a:elems, ''), 'v': [a:elems[2]]}
   call s:Debug(result)
   return result
 endfunction "vret#parser#mark
@@ -499,7 +503,7 @@ endfunction "vret#parser#mark
 function! vret#parse#char_code(elems) abort
   "char_code    ::= decimal_char | octal_char | hex_char_low | hex_char_medium | hex_char_high | err11 -> #char_code
   call s:Debug(a:elems, 2)
-  let result = {'o': '['.a:elems[0], 'v': [a:elems[1]]}
+  let result = {'elem': 'char_code', 'o': join(a:elems[0:1], ''), 'v': [a:elems[2]]}
   call s:Debug(result)
   return result
 endfunction "vret#parser#char_code
@@ -507,9 +511,9 @@ endfunction "vret#parser#char_code
 "char_class() {{{1
 function! vret#parse#char_class(elems) abort
   " char_class ::= identifier | identifier_no_digits | keyword | non_keyword | file_name | file_name_no_digits | printable | printable_no_digits | whitespace | non_whitespace | digit | non_digit | hex_digit | non_hex_digit | octal_digit | non_octal_digit | word | non_word | head | non_head | alpha | non_alpha | lowercase | non_lowercase | uppercase | non_uppercase | nl_or_identifier | nl_or_identifier_no_digits | nl_or_keyword | nl_or_non_keyword | nl_or_file_name | nl_or_file_name_no_digits | nl_or_printable | nl_or_printable_no_digits | nl_or_whitespace | nl_or_non_whitespace | nl_or_digit | nl_or_non_digit | nl_or_hex_digit | nl_or_non_hex_digit | nl_or_octal_digit | nl_or_non_octal_digit | nl_or_word | nl_or_non_word | nl_or_head | nl_or_non_head | nl_or_alpha | nl_or_non_alpha | nl_or_lowercase | nl_or_non_lowercase | nl_or_uppercase | nl_or_non_uppercase -> #char_class
-  call s:Debug(2, a:elems)
-  let result = {'o': substitute(a:elems, '_', '', ''), 'v': []}
-  let result.nl = match(a:elems, '_') > -1
+  call s:Debug(a:elems, 2)
+  let result = {'elem': 'char_class', 'o': a:elems, 'v': [a:elems[-1:]]}
+  let result.nl = a:elems[1] == '_'
   call s:Debug(result)
   return result
 endfunction "vret#parser#char_class
@@ -518,8 +522,7 @@ endfunction "vret#parser#char_class
 function! vret#parse#collection(elems) abort
   " collection ::= start_collection caret ? coll_inner end_collection -> #collection
   call s:Debug(a:elems, 2)
-  let operator = substitute(a:elems[0], '^\\_', '', '')
-  let result = {'o': operator, 'v': a:elems[2]}
+  let result = {'elem': 'collection', 'o': a:elems[0], 'v': a:elems[2]}
   if a:elems[0] == '\_['
     call add(result.v, '\n')
   endif
@@ -573,7 +576,7 @@ endfunction "vret#parser#end_collection
 "coll_start() {{{1
 function! vret#parse#coll_start(elems) abort
   " coll_start ::= '\\_' -> #coll_start
-  let result = a:elems[1]
+  let result = join(a:elems, '')
   call s:ChLvl('+')
   call s:Debug(result)
   return result
@@ -592,7 +595,7 @@ endfunction "vret#parser#coll_nl_or_start
 function! vret#parse#range(elems) abort
   " range ::= char '-' char -> #range
   call s:Debug(a:elems, 2)
-  let result = {'o': a:elems[1], 'v': [a:elems[0], a:elems[2]]}
+  let result = {'elem': 'coll_range', 'o': a:elems[1], 'v': [a:elems[0], a:elems[2]]}
   call s:Debug(result)
   return result
 endfunction "vret#parser#range
@@ -601,7 +604,7 @@ endfunction "vret#parser#range
 function! vret#parse#coll_decimal_char(elems) abort
   " range ::= char '-' char -> #coll_decimal_char
   call s:Debug(a:elems, 2)
-  let result = {'o': '['.a:elems[0], 'v': [a:elems[1]]}
+  let result = {'elem': 'coll_numeric_char', 'o': '['.a:elems[0], 'v': [a:elems[1]]}
   call s:Debug(result)
   return result
 endfunction "vret#parser#coll_decimal_char
@@ -610,7 +613,7 @@ endfunction "vret#parser#coll_decimal_char
 function! vret#parse#bracket_class(elems) abort
   " bracket_class ::= '[:' ( bc_alpha | bc_alnum | bc_blank | bc_cntrl | bc_digit | bc_graph | bc_lower | bc_print | bc_punct | bc_space | bc_upper | bc_xdigit | bc_return | bc_tab | bc_escape | bc_backspace ) ':]' -> #bracket_class
   call s:Debug(a:elems, 2)
-  let result = {'o': a:elems[0], 'v': [a:elems[1]]}
+  let result = {'elem': 'bracket_class', 'o': a:elems[0], 'v': [a:elems[1]]}
   call s:Debug(result)
   return result
 endfunction "vret#parser#bracket_class
@@ -626,11 +629,11 @@ endfunction "vret#parser#coll_char
 
 "sequence() {{{1
 function! vret#parse#sequence(elems) abort
-  " sequence ::= start_sequence ( collection | seq_char ) + end_sequence -> #sequence
+  " sequence ::= start_sequence ( err10 | collection | seq_char ) + end_sequence | err8 | err9 -> #sequence
   call s:Debug(a:elems, 2)
   let list = a:elems[1]
   call map(list, 'type(v:val) == type([]) ? v:val[1] : v:val')
-  let result = {'o': '\'.a:elems[0][1], 'v': list}
+  let result = {'elem': 'sequence', 'o': join(a:elems[0], ''), 'v': list}
   call s:Debug(result)
   return result
 endfunction "vret#parser#sequence
@@ -639,7 +642,7 @@ endfunction "vret#parser#sequence
 function! vret#parse#equivalence(elems) abort
   " equivalence ::= '\[=' char '=\]' -> #equivalence
   call s:Debug(a:elems, 2)
-  let result = {'o': a:elems[0], 'v': [a:elems[1]]}
+  let result = {'elem': 'equivalence', 'o': a:elems[0], 'v': [a:elems[1]]}
   call s:Debug(result)
   return result
 endfunction "vret#parser#equivalence
@@ -654,7 +657,7 @@ function! vret#parse#char(elems) abort
     "let result = (a:elems[1] =~ '[*.~]' ? '\' : '') . a:elems[1]
     let result = join(a:elems, '')
   elseif type(a:elems) == type('') && a:elems == '$'
-    let result = {'o': '$', 'v': [], 'eol': 0}
+    let result = {'elem': 'eol_or_$', 'o': '$', 'v': [], 'eol': 0}
   else
     let result = a:elems
   endif
